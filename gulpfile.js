@@ -6,7 +6,7 @@ var gulp=require('gulp'),
     BUILD_NAME='elliptical.component.js',
     MIN_NAME='elliptical.component.min.js',
     REPO_NAME='elliptical component',
-    WEB_COMPONENTS='./node_modules/webcomponents.js/webcomponents-lite.js',
+    WEB_COMPONENTS='./dist/webcomponents-lite.js',
     JQ='./node_modules/observable-component/dist/jquery.js',
     CSS ='./node_modules/observable-component/dist/styles.css',
     DUST='./node_modules/observable-component/dist/dust.js',
@@ -15,13 +15,13 @@ var gulp=require('gulp'),
     MOMENT='./node_modules/observable-component/dist/moment.js',
     BOOTSTRAP='./lib/bootstrap.js',
     DIST='./dist',
-    DEMO='./demo/bundle';
+    DEMO='./demo/bundle',
     BUNDLE_JSON=require('./bundle.json'),
     BUNDLE='./bundle';
 
 
 gulp.task('default',function(){
-    console.log(REPO_NAME + ' ..."tasks: gulp build|gulp minify|gulp bundle"');
+    console.log(REPO_NAME + ' ..."tasks: gulp build|minify|bundle|demo"');
 });
 
 gulp.task('build',function(){

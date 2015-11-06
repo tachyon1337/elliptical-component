@@ -104,9 +104,14 @@ ui-form{
     display:block;
 }
 
-[template],template{
-    visibility:hidden;
+[template]{
+    visibility:hidden !important;
 }
+
+[template].visible{
+    visibility:visible !important;
+}
+
 
 [role=form] > form{
     visibility:hidden;

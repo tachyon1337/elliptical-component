@@ -8,10 +8,18 @@ window.Elliptical = function (fn) {
 };
 
 Elliptical.context={
-    set:function(prop,val){
+    get:function(){
         window.$$=window.$$ || {};
         $$.elliptical=$$.elliptical || {};
         $$.elliptical.context=$$.elliptical.context || {};
-        $$.elliptical.context[prop]=val;
+        return $$.elliptical.context;
+    },
+    set:function(prop,val){
+        var context=this.get();
+        context[prop]=val;
+    },
+    clear:function(){
+        var context=this.get();
+        context={};
     }
 };
