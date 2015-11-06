@@ -1,4 +1,4 @@
-/*! dustjs-linkedin - v2.7.2
+/*! dustjs - v2.7.2
 * http://dustjs.com/
 * Copyright (c) 2015 Aleksander Williams; Released under the MIT License */
 (function (root, factory) {
@@ -910,7 +910,7 @@
               });
             }
           } else {
-            if (head.$0) {
+            if (head.$0!==undefined) {
               delete head.$0;
             }
           }

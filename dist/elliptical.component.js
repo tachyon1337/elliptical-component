@@ -4902,7 +4902,7 @@
         _render:function(node,templateId,context,callback){
             this._verifyTemplateExists(templateId);
             dust.render(templateId, context, function (err, out) {
-                if(out){
+                if(out || out===""){
                     node.innerHTML=out;
                 }
                 if (callback) {
@@ -11144,9 +11144,6 @@ return $.widget;
     };
 
 
-
-
-
     /// create the element factory
     $.element = $.elementFactory($.elliptical.element);
 
@@ -11230,8 +11227,6 @@ return $.widget;
     }
 
 
-
-
     /**
      * returns an options object from declarative element attributes
      * @param element {Object}
@@ -11288,6 +11283,11 @@ return $.widget;
         return patt.test(attr);
     }
 
+    /**
+     *
+     * @param node
+     * @returns {*}
+     */
     function upgradedDataSet(node){
         if(!node){
             return null;
@@ -11301,6 +11301,11 @@ return $.widget;
 
     }
 
+    /**
+     *
+     * @param s
+     * @returns {{tagName: *, name: *, err: *}}
+     */
     function parseElementNameParams(s){
         var tagName=null;
         var name=null;
