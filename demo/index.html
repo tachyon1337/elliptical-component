@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+    <script src="/bundle/webcomponents-lite.js"></script>
+    <script src="/bundle/elliptical.bootstrap.js"></script>
+    <link rel="stylesheet" href="bundle/styles.css" type="text/css">
+</head>
+<body>
+<section>
+    <link rel="import" href="components/hello-world/hello-world.html" property="elliptical">
+    <link rel="import" href="components/observable-list/observable-list.html" property="elliptical">
+    <link rel="import" href="components/observable-detail/observable-detail.html" property="elliptical">
+    <link rel="import" href="components/profile-template/profile-template.html" property="elliptical">
+    <hello-world></hello-world>
+    <observable-list template>
+        {#accounts}
+            <li>Name: <input data-bind="value:accounts.{$0}.name" value="{name}">&nbsp;&nbsp;<span data-index="{$0}" style="cursor:pointer;" on-click="_onClick">remove</span></li>
+        {/accounts}
+    </observable-list>
+    <observable-detail title="Profile">
+        <div class="profile" template>
+            <input type="text" value="{name}" data-bind="value:name">
+            <input type="text" value="{address}" data-bind="value:address">
+            <button>Submit</button>
+        </div>
+    </observable-detail>
+    <profile-template scope="address" object-assign="true"></profile-template>
+</section>
+<link rel="import" href="bundle.html">
+<script>
+    var address={
+        name:'Melissa Johnson',
+        street:'1800 West Dr',
+        city:'Charlotte',
+        state:'NC',
+        zip:88980,
+        phone:'555-555-0000'
+    };
+    Elliptical.context.set('address',address);
+</script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<style>
+    profile-template{
+        display:block;
+        width:400px;
+        max-width:100%;
+    }
+    profile-template .flex-template{
+        display:-webkit-flex;
+        display:flex;
+        -webkit-flex-direction:column;
+        flex-direction:column;
+    }
+    profile-template .flex-template>*{
+        margin:1em 0;
+    }
+    profile-template .flex-template>div>span{
+        margin-right:.5em;
+        min-width:75px;
+        display:inline-block;
+    }
+    profile-template .flex-template>div>input{
+        min-width:200px;
+
+    }
+</style>
+<profile-template definition>
+    <template>
+        <div class="flex-template" template>
+            <h3><span data-bind="text:name">{name}</span></h3>
+            <div>
+                <span>Name: </span>
+                <input type="text" data-bind="value:name" value="{name}">
+            </div>
+            <div>
+                <span>Street: </span>
+                <input type="text" data-bind="value:street" value="{street}">
+            </div>
+            <div>
+                <span>City: </span>
+                <input type="text" data-bind="value:city" value="{city}">
+            </div>
+            <div>
+                <span>State: </span>
+                <input type="text" data-bind="value:state" value="{state}">
+            </div>
+            <div>
+                <span>Zip: </span>
+                <input type="text" data-bind="value:zip" value="{zip}">
+            </div>
+            <div>
+                <span>Phone: </span>
+                <input type="text" data-bind="value:phone" value="{phone}">
+            </div>
+        </div>
+    </template>
+</profile-template>
+<script>
+    Elliptical(function(){
+        $.component('profile-template',{});
+    });
+</script>
