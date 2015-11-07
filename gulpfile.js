@@ -13,7 +13,8 @@ var gulp=require('gulp'),
     MS='./node_modules/observable-component/dist/mutation-summary.js',
     UTILS='./node_modules/elliptical-utils/dist/elliptical.utils.js',
     MOMENT='./node_modules/observable-component/dist/moment.js',
-    BOOTSTRAP='./lib/bootstrap.js',
+    BOOTSTRAP='./lib/init.js',
+    BOOTSTRAP_NAME='elliptical.init.js',
     DIST='./dist',
     DEMO='./demo/bundle',
     BUNDLE_JSON=require('./bundle.json'),
@@ -28,7 +29,7 @@ gulp.task('build',function(){
     fileStream(BUNDLE_JSON,DIST);
     fileStream(JQ,DIST);
     fileStream(CSS,DIST);
-    concatFileStream(BOOTSTRAP,DIST,'elliptical.bootstrap.js');
+    concatFileStream(BOOTSTRAP,DIST,BOOTSTRAP_NAME);
     concatStream(BUILD_NAME)
         .pipe(gulp.dest(DIST));
 });
@@ -40,7 +41,7 @@ gulp.task('minify',function(){
     minFileStream(JQ,DIST,'jquery.min.js');
     minFileStream(UTILS,DIST,'elliptical.utils.min.js');
     minFileStream(MOMENT,DIST,'moment.min.js');
-    minFileStream(BOOTSTRAP,DIST,'elliptical.bootstrap.min.js');
+    fileStream(BOOTSTRAP,DIST,BOOTSTRAP_NAME);
     concatStream(MIN_NAME)
         .pipe(uglify())
         .pipe(gulp.dest(DIST));
@@ -50,7 +51,7 @@ gulp.task('bundle',function(){
     fileStream(JQ,BUNDLE);
     fileStream(CSS,BUNDLE);
     fileStream(BUNDLE_JSON,BUNDLE);
-    concatFileStream(BOOTSTRAP,BUNDLE,'elliptical.bootstrap.js');
+    concatFileStream(BOOTSTRAP,BUNDLE,BOOTSTRAP_NAME);
     concatStream(BUILD_NAME)
         .pipe(gulp.dest(BUNDLE));
 });
@@ -59,7 +60,7 @@ gulp.task('demo',function(){
     fileStream(JQ,DEMO);
     fileStream(CSS,DEMO);
     fileStream(BUNDLE_JSON,DEMO);
-    concatFileStream(BOOTSTRAP,DEMO,'elliptical.bootstrap.js');
+    concatFileStream(BOOTSTRAP,DEMO,BOOTSTRAP_NAME);
     concatStream(BUILD_NAME)
         .pipe(gulp.dest(DEMO));
 });
