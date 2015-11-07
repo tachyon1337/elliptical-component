@@ -8779,13 +8779,17 @@
             }
         },
 
+        _disposeCache:function(){
+            var $cache=this._data.get('$cache');
+            $cache=null;
+        },
+
         /**
          *
          * @private
          */
         _dispose:function(){
-            var $cache=this._data.get('$cache');
-            $cache=null;
+            this._disposeCache();
             if(this._super){
                 this._super();
             }
@@ -8854,12 +8858,16 @@
             });
         },
 
+        _disposePubSub:function(){
+            this._unbindSubscriptions();
+        },
+
         /**
          *
          * @private
          */
         _dispose:function(){
-            this._unbindSubscriptions();
+            this._disposePubSub();
             if(this._super){
                 this._super();
             }
@@ -8985,7 +8993,7 @@
         __destroyObservable:function(){
             var scopeObserver=this._data.get('scopeObserver');
             if(scopeObserver){
-                scopeObserver.close();
+                scopeObserver.disconnect_();
                 scopeObserver=null;
                 this.$scope=null;
             }
@@ -9056,13 +9064,16 @@
             }
         },
 
+        _disposeScope:function(){
+            this.__destroyObservable();
+        },
 
         /**
          * destroy clean-up
          * @private
          */
         _dispose:function(){
-            this.__destroyObservable();
+            this._disposeScope();
             if(this._super){
                 this._super();
             }
@@ -9194,17 +9205,7 @@
             this._data.set('pathObservers',[]);
         },
 
-        /**
-         *
-         * @private
-         */
-        _disconnectPathObservers:function(){
-            var pathObservers=this._data.get('pathObservers');
-            pathObservers.forEach(function(observer){
-                observer.disconnect();
-            });
-            pathObservers=null;
-        },
+
 
         /**
          *
@@ -9331,15 +9332,6 @@
         _connectDOMObserver:function(){
             var templateNode=this._data.get('templateNode');
             $(templateNode).mutationSummary('connect', this.__onMutation.bind(this), [{ all: true }]);
-        },
-
-        /**
-         *
-         * @private
-         */
-        _disconnectDOMObserver:function(){
-            var templateNode=this._data.get('templateNode');
-            $(templateNode).mutationSummary('disconnect');
         },
 
         /**
@@ -9602,7 +9594,7 @@
          * @private
          */
         _rebind:function(){
-            this._dispose();
+            this._disposeTemplate();
             this._initPathObservers();
             this.__render();
         },
@@ -9611,9 +9603,34 @@
          *
          * @private
          */
-        _dispose:function(){
+        _disconnectDOMObserver:function(){
+            var templateNode=this._data.get('templateNode');
+            $(templateNode).mutationSummary('disconnect');
+        },
+
+        /**
+         *
+         * @private
+         */
+        _disconnectPathObservers:function(){
+            var pathObservers=this._data.get('pathObservers');
+            pathObservers.forEach(function(observer){
+                observer.disconnect_();
+            });
+            pathObservers=null;
+        },
+
+        /**
+         *
+         * @private
+         */
+        _disposeTemplate:function(){
             this._disconnectDOMObserver();
             this._disconnectPathObservers();
+        },
+
+        _dispose:function(){
+            this._disposeTemplate();
             if(this._super){
                 this._super();
             }
@@ -10957,7 +10974,11 @@ return $.widget;
          * for cleanup
          * @private
          */
-        _dispose: $.noop,
+        _dispose:function(){
+            if(this._super){
+                this._super();
+            }
+        },
 
 
         /**
@@ -11550,8 +11571,6 @@ return $.widget;
             return (scopeProp && context) ? context[scopeProp] : undefined;
         },
 
-
-        _dispose: function(){this._super();},
 
         scope:function(){
             return this.$scope;
