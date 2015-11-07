@@ -11157,6 +11157,13 @@ return $.widget;
     }
 
 
+    $.element.serviceLocator=function(fn,container){
+        var proto={
+            __serviceLocator:fn.bind(container)
+        };
+
+        $.extend($.elliptical.element.prototype,proto);
+    };
 
     /// PRIVATE----------------------------------------------------------------------------------------------
 
