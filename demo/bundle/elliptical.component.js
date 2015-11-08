@@ -5041,11 +5041,9 @@
             var options=(this.options) ? this.options.opts : this.opts;
             if(options===undefined) return;
             options=JSON.parse(options);
-            var src=(this.options) ? this.options : this;
-            Object.assign(src,options);
+            (this.options) ? this.options.opts=options : this.opts=options;
         }
-
-
+        
     };
 }));
 
