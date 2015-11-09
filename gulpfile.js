@@ -7,18 +7,23 @@ var gulp=require('gulp'),
     MIN_NAME='elliptical.component.min.js',
     REPO_NAME='elliptical component',
     WEB_COMPONENTS='./dist/webcomponents-lite.js',
-    JQ='./node_modules/observable-component/dist/jquery.js',
-    CSS ='./node_modules/observable-component/dist/styles.css',
-    DUST='./node_modules/observable-component/dist/dust.js',
-    MS='./node_modules/observable-component/dist/mutation-summary.js',
+    JQ='./node_modules/component-extensions/dist/jquery.js',
+    CSS ='./node_modules/component-extensions/dist/styles.css',
+    DUST='./node_modules/component-extensions/dist/dust.js',
+    DUSTH='./node_modules/component-extensions/dist/dust-helpers.js',
+    MS='./node_modules/component-extensions/dist/mutation-summary.js',
     UTILS='./node_modules/elliptical-utils/dist/elliptical.utils.js',
-    MOMENT='./node_modules/observable-component/dist/moment.js',
+    MOMENT='./node_modules/component-extensions/dist/moment.js',
+    EVENT='./node_modules/elliptical-event/dist/elliptical.event.js',
     BOOTSTRAP='./lib/init.js',
     BOOTSTRAP_NAME='elliptical.init.js',
     DIST='./dist',
     DEMO='./demo/bundle',
     BUNDLE_JSON=require('./bundle.json'),
-    BUNDLE='./bundle';
+    BOWER='./bower_components',
+    BOWER_EC='./bower_components/elliptical-component',
+    BOWER_EC_DIST='./bower_components/elliptical-component/dist';
+
 
 
 gulp.task('default',function(){
@@ -26,8 +31,6 @@ gulp.task('default',function(){
 });
 
 gulp.task('build',function(){
-    fileStream(BUNDLE_JSON,DIST);
-    fileStream(JQ,DIST);
     fileStream(CSS,DIST);
     concatFileStream(BOOTSTRAP,DIST,BOOTSTRAP_NAME);
     concatStream(BUILD_NAME)
@@ -36,11 +39,6 @@ gulp.task('build',function(){
 
 gulp.task('minify',function(){
     fileStream(CSS,DIST);
-    minFileStream(DUST,DIST,'dust.min.js');
-    minFileStream(MS,DIST,'mutation-summary.min.js');
-    minFileStream(JQ,DIST,'jquery.min.js');
-    minFileStream(UTILS,DIST,'elliptical.utils.min.js');
-    minFileStream(MOMENT,DIST,'moment.min.js');
     fileStream(BOOTSTRAP,DIST,BOOTSTRAP_NAME);
     concatStream(MIN_NAME)
         .pipe(uglify())
@@ -48,21 +46,24 @@ gulp.task('minify',function(){
 });
 
 gulp.task('bundle',function(){
-    fileStream(JQ,BUNDLE);
-    fileStream(CSS,BUNDLE);
-    fileStream(BUNDLE_JSON,BUNDLE);
-    concatFileStream(BOOTSTRAP,BUNDLE,BOOTSTRAP_NAME);
+    fileStream(CSS,DIST);
+    concatFileStream(BOOTSTRAP,DIST,BOOTSTRAP_NAME);
+    fileStream(BUNDLE_JSON,DIST);
     concatStream(BUILD_NAME)
-        .pipe(gulp.dest(BUNDLE));
+        .pipe(gulp.dest(DIST));
 });
 
 gulp.task('demo',function(){
-    fileStream(JQ,DEMO);
-    fileStream(CSS,DEMO);
-    fileStream(BUNDLE_JSON,DEMO);
-    concatFileStream(BOOTSTRAP,DEMO,BOOTSTRAP_NAME);
+    fileStream('./demo/hello-world/**/*.*',BOWER + '/hello-world');
+    fileStream('./demo/profile-template/**/*.*',BOWER + '/profile-template');
+    fileStream('./demo/observable-detail/**/*.*',BOWER + '/observable-detail');
+    fileStream('./demo/observable-list/**/*.*',BOWER + '/observable-list');
+    fileStream('./elliptical-component.html',BOWER_EC);
+    fileStream(CSS,BOWER_EC_DIST);
+    fileStream(WEB_COMPONENTS,BOWER_EC_DIST);
+    concatFileStream(BOOTSTRAP,BOWER_EC_DIST,BOOTSTRAP_NAME);
     concatStream(BUILD_NAME)
-        .pipe(gulp.dest(DEMO));
+        .pipe(gulp.dest(BOWER_EC_DIST));
 });
 
 function srcStream(src){

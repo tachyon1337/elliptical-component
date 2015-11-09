@@ -1,0 +1,29 @@
+{
+  "name": "elliptical-component",
+  "description": "Observable web components",
+  "version":"1.0.1",
+  "main": "dist/elliptical.component.js",
+  "authors": [
+    "S. Francis"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "observable",
+    "web",
+    "components"
+  ],
+  "homepage": "https://github.com/tachyon1337/elliptical-component",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "observable-component": "~1.0.2",
+    "elliptical-mutation-summary": "~1.0.1",
+    "elliptical-event": "~1.0.0"
+  }
+}

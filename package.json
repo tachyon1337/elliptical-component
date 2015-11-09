@@ -1,7 +1,7 @@
 {
   "name": "elliptical-component",
   "description": "Observable web components",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "S. Francis",
   "license": "MIT",
   "repository": {
@@ -12,8 +12,10 @@
     "webcomponentsjs": "git+https://github.com/webcomponents/webcomponentsjs.git",
     "jquery-ui": "git+https://github.com/jquery/jquery-ui.git",
     "elliptical-utils":"git+https://github.com/tachyon1337/elliptical-utils.git",
+    "elliptical-event":"git+https://github.com/tachyon1337/elliptical-event.git",
     "component-extensions":"git+https://github.com/tachyon1337/component-extensions.git",
-    "observable-component": "git+https://github.com/tachyon1337/observable-component.git"
+    "observable-component": "git+https://github.com/tachyon1337/observable-component.git",
+    "elliptical-mutation-summary":"git+https://github.com/tachyon1337/elliptical-mutation-summary.git"
   },
   "devDependencies": {
     "gulp": "^3.8.7",

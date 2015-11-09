@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <title></title>
-    <script src="bundle/webcomponents-lite.js"></script>
-    <script src="bundle/elliptical.init.js"></script>
-    <link rel="stylesheet" href="bundle/styles.css" type="text/css">
+    <script src="bower_components/elliptical-component/dist/webcomponents-lite.js"></script>
+    <script src="bower_components/elliptical-component/dist/elliptical.init.js"></script>
+    <link rel="stylesheet" href="bower_components/elliptical-component/dist/styles.css" type="text/css">
     <style>
         body{
             margin:2em 3em;
@@ -14,10 +14,11 @@
 </head>
 <body>
 <section>
-    <link rel="import" href="components/hello-world/hello-world.html" property="elliptical">
-    <link rel="import" href="components/observable-list/observable-list.html" property="elliptical">
-    <link rel="import" href="components/observable-detail/observable-detail.html" property="elliptical">
-    <link rel="import" href="components/profile-template/profile-template.html" property="elliptical">
+    <!-- NOTE: Element Template -->
+    <link rel="import" href="bower_components/hello-world/hello-world.html" property="elliptical">
+    <link rel="import" href="bower_components/observable-list/observable-list.html" property="elliptical">
+    <link rel="import" href="bower_components/observable-detail/observable-detail.html" property="elliptical">
+    <link rel="import" href="bower_components/profile-template/profile-template.html" property="elliptical">
     <hello-world></hello-world>
     <observable-list template>
         {#accounts}
@@ -35,7 +36,7 @@
     <profile-template data='{"name":"Brad Thompson","street":"63289 Arlington Road"}'>
     </profile-template>
 </section>
-<link rel="import" href="bundle.html">
+<link rel="import" href="bower_components/elliptical-component/elliptical-component.html">
 <script>
     var address={
         name:'Melissa Johnson',

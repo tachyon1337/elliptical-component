@@ -1,9 +1,7 @@
 [
-  "./node_modules/observable-component/dist/observable.component.js",
   "./lib/version.js",
   "./lib/widget.js",
   "./lib/element.js",
   "./lib/component.js",
-  "./lib/binding.js",
   "./lib/distribution.js"
 ]
