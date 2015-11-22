@@ -25,8 +25,8 @@
     }
 }(this, function () {
     var utils={};
-    utils.datetime={
 
+    utils.datetime={
         isDate: function(obj){
             return (/Date/).test(Object.prototype.toString.call(obj)) && !isNaN(obj.getTime());
         },
@@ -223,6 +223,26 @@
     $.utils = $.utils || {};
     $.extend($.utils, utils);
 
+    return $;
+
+
+}));
+
+//umd pattern
+
+(function (root, factory) {
+    if (typeof module !== 'undefined' && module.exports) {
+        //commonjs
+        module.exports = factory();
+    } else if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define([], factory);
+    } else {
+        // Browser globals (root is window)
+        root.returnExports = factory();
+    }
+}(this, function () {
+
     /* String/Number prototypes  */
     String.prototype.toCamelCase=function(){
         return this.replace(/[-_]([a-z])/g, function (g) { return g[1].toUpperCase(); });
@@ -297,9 +317,9 @@
 
         var patt = new RegExp( '\\s' +
             removals.
-                replace( /\*/g, '[A-Za-z0-9-_]+' ).
-                split( ' ' ).
-                join( '\\s|\\s' ) +
+            replace( /\*/g, '[A-Za-z0-9-_]+' ).
+            split( ' ' ).
+            join( '\\s|\\s' ) +
             '\\s', 'g' );
 
         self.each( function ( i, it ) {
@@ -440,9 +460,7 @@
         return this[0].hasAttribute(attr);
     };
 
-
     return $;
-
 
 }));
 
@@ -699,8 +717,7 @@
 	function _getScreenWidth() {
 		return window.innerWidth || $(window).width();
 	}
-	$.device = $.device || {};
-	$.extend($.device, device);
+	$.device = device
 	return $;
 
 

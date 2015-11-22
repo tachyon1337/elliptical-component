@@ -1,7 +1,7 @@
 {
   "name": "elliptical-component",
   "description": "Observable web components",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "author": "S. Francis",
   "license": "MIT",
   "repository": {
@@ -10,12 +10,18 @@
   },
   "dependencies":{
     "webcomponentsjs": "git+https://github.com/webcomponents/webcomponentsjs.git",
-    "jquery-ui": "git+https://github.com/jquery/jquery-ui.git",
     "elliptical-utils":"git+https://github.com/tachyon1337/elliptical-utils.git",
     "elliptical-event":"git+https://github.com/tachyon1337/elliptical-event.git",
-    "component-extensions":"git+https://github.com/tachyon1337/component-extensions.git",
-    "observable-component": "git+https://github.com/tachyon1337/observable-component.git",
-    "elliptical-mutation-summary":"git+https://github.com/tachyon1337/elliptical-mutation-summary.git"
+    "dustjs":"git+https://github.com/tachyon1337/dustjs.git",
+    "elliptical-dust-helpers":"git+https://github.com/tachyon1337/elliptical-dust-helpers.git",
+    "elliptical-jquery": "git+https://github.com/tachyon1337/jquery.git",
+    "elliptical-jquery-ui": "git+https://github.com/tachyon1337/jquery-ui.git",
+    "jquery-extensions":"git+https://github.com/tachyon1337/jquery-extensions.git",
+    "jquery-mutation-summary":"git+https://github.com/tachyon1337/jquery-mutation-summary.git",
+    "elliptical-mutation-summary":"git+https://github.com/tachyon1337/elliptical-mutation-summary.git",
+    "component-extensions": "git+https://github.com/tachyon1337/component-extensions.git",
+    "observable-component": "git+https://github.com/tachyon1337/observable-component.git"
+
   },
   "devDependencies": {
     "gulp": "^3.8.7",

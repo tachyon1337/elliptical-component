@@ -240,7 +240,7 @@
     return {
 
         _device: $.device,
-        _mq: $.mq,
+        _mq: $.device.mq,
 
         _press: function () {
             return ('ontouchend' in document) ? 'touchstart' : 'click';
@@ -309,6 +309,8 @@
                 });
             }
             var drawerHeader = $('<header></header>');
+            var touchHeader=this.element.find('touch-header');
+            if(touchHeader[0]) drawerHeader.append(touchHeader);
 
             //append header to drawer
             drawer.append(drawerHeader);
@@ -618,9 +620,7 @@
         _removeTouchNavigation: function (element) {
             //unbind touch search
             var touchInput=this._data.get('touchInput');
-            if (touchInput) {
-                this._unbindSearch(touchInput);
-            }
+            if (touchInput) this._unbindSearch(touchInput);
             //remove drawer
             this._removeDrawer();
             //reset element
@@ -648,9 +648,7 @@
 
             //get the drawer
             var drawerSection = this._data.get('drawerSection');
-            if(!drawerSection){
-                return;
-            }
+            if(!drawerSection)return;
 
             //get the drawer header
             var drawerHeader = this._data.get('drawerHeader');
@@ -664,10 +662,7 @@
             var touchMenu=(this.options) ? this.options.touchMenu : this.touchMenu;
 
             //add home menu item at the top
-            if (includeHome) {
-                drawerMenu.append(this._methods.createHomeListItem(homeUrl, homeIcon));
-
-            }
+            if (includeHome) drawerMenu.append(this._methods.createHomeListItem(homeUrl, homeIcon));
 
             if(touchMenu !==undefined && touchMenu===false){
                 //append menu to drawer
@@ -717,8 +712,25 @@
                 drawerMenu.append(optsItems);
             }
 
+
+            //prepend touch-section header, if any
+            var touchSection=this.element.find('touch-section[header]');
+            if(touchSection[0]){
+                var clone_=touchSection.clone();
+                drawerSection.append(clone_);
+            }
+
+
             //append menu to drawer
             drawerSection.append(drawerMenu);
+
+            //prepend touch-section footer, if any
+            var touchSectionF=this.element.find('touch-section[footer]');
+            if(touchSectionF[0]){
+                var cloneF=touchSectionF.clone();
+                drawerSection.append(cloneF);
+            }
+
 
             //save ref to menu
             this._data.set('drawerMenu',drawerMenu);
@@ -739,7 +751,7 @@
 
         _extractMenuItems:function(clone){
             var excludeMenuItemSelector='[touch-menu-item="false"]';
-            var items = clone.children().not(excludeMenuItemSelector);
+            var items = clone.children().not(excludeMenuItemSelector).add(clone.find('[data-role="menu-item-dropdown"]'));
             return this._methods.filterMenuItems(items);
         },
 
@@ -766,9 +778,7 @@
                 var drawerMenu = this._data.get('drawerMenu');
                 //add menu items from plugin opts
                 var optsLi = this._methods.createMenuItemsFromArray(model);
-                if (optsLi) {
-                    drawerMenu.append(optsLi);
-                }
+                if (optsLi) drawerMenu.append(optsLi);
             }
         },
 
@@ -830,19 +840,15 @@
          */
         _onSearch: function (input,device) {
             if(device==='desktop'){
-                if(this._data.get('searchRegistered')){
-                    return false;
-                } else{
+                if(this._data.get('searchRegistered')) return false;
+                else{
                     this._data.set('searchRegistered',true);
                     this._onDesktopSearch(input)
                 }
 
             }else{
-                if(this._data.get('touchSearchRegistered')){
-                    return false;
-                } else {
-                    this._data.set('touchSearchRegistered',true);
-                }
+                if(this._data.get('touchSearchRegistered')) return false;
+                else this._data.set('touchSearchRegistered',true);
             }
         },
 
@@ -883,13 +889,11 @@
 
             input.on('focus', function () {
                 input.on('tap', function (event) {
-                    if ($(this).hasClass('focused')) {
-                        handleEvent(input);
-                    } else {
-                        input.addClass('focused');
-                    }
+                    if ($(this).hasClass('focused')) handleEvent(input);
+                    else input.addClass('focused');
                 });
             });
+
             input.on('blur', function () {
                 input.removeClass('focused');
                 input.off('tap');
@@ -956,9 +960,7 @@
             var href = a.attr('href');
             var action = a.attr('data-action');
             var route = a.attr('data-route');
-            if (route && route === 'false') {
-                handleTouchEvents = true;
-            }
+            if (route && route === 'false') handleTouchEvents = true;
             /* close the drawer */
             this._hide();
             if (href !== undefined && href !== '#' && action === undefined && handleTouchEvents) {
@@ -966,9 +968,7 @@
                 setTimeout(function(){
                     if(typeof href !=='undefined'){
                         if(self._location) self._location(href);
-                        else{
-                            location.href=href;
-                        }
+                        else location.href=href;
                     }
                 },duration);
             } else { //else, just fire an event
@@ -1016,9 +1016,6 @@
              *
              * @returns {boolean}
              */
-            customElements:function(){
-                return true;
-            },
 
             /**
              * returns menu item selector
@@ -1389,10 +1386,10 @@
 (function (root, factory) {
     if (typeof module !== 'undefined' && module.exports) {
         //commonjs
-        module.exports = factory();
+        module.exports = factory(require('elliptical-utils'),require('dustjs'));
     } else if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define([], factory);
+        define(['elliptical-utils','dustjs'], factory);
     } else {
         // Browser globals (root is window)
         root.elliptical=root.elliptical || {};
@@ -1589,7 +1586,7 @@
     } else {
         // Browser globals (root is window)
         var e=root.elliptical.extensions;
-        root.elliptical.extensions.base = factory(root.elliptical.utils,e.device,
+        root.elliptical.extensions.base = factory(root.elliptical.utils,root,e.device,
             e.template,e.transition,e.transform,e.utils,e.event,e.options);
         root.returnExports = root.elliptical.extensions.base;
     }

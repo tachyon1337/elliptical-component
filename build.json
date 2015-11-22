@@ -1,6 +1,4 @@
 [
-  "./lib/version.js",
-  "./lib/widget.js",
   "./lib/element.js",
   "./lib/component.js",
   "./lib/distribution.js"

@@ -1,7 +1,7 @@
 {
   "name": "elliptical-component",
   "description": "Observable web components",
-  "version":"1.0.3",
+  "version": "1.0.5",
   "main": "dist/elliptical.component.js",
   "authors": [
     "S. Francis"
@@ -24,6 +24,7 @@
   "dependencies": {
     "observable-component": "~1.0.2",
     "elliptical-mutation-summary": "~1.0.1",
-    "elliptical-event": "~1.0.0"
+    "elliptical-event": "~1.0.0",
+    "elliptical-jquery-ui": "~1.11.3"
   }
 }

@@ -11,6 +11,7 @@ var gulp=require('gulp'),
     BOOTSTRAP='./lib/init.js',
     BOOTSTRAP_NAME='elliptical.init.js',
     DIST='./dist',
+    BUNDLE='./bundle',
     BUNDLE_JSON=require('./bundle.json'),
     BOWER='./bower_components',
     BOWER_EC='./bower_components/elliptical-component',
@@ -38,11 +39,14 @@ gulp.task('minify',function(){
 });
 
 gulp.task('bundle',function(){
-    fileStream(CSS,DIST);
-    concatFileStream(BOOTSTRAP,DIST,BOOTSTRAP_NAME);
-    fileStream(BUNDLE_JSON,DIST);
+    var bundleSrc=BUNDLE_JSON.concat('./bundle/elliptical.component.js');
+    fileStream(CSS,BUNDLE);
+    concatFileStream(BOOTSTRAP,BUNDLE,BOOTSTRAP_NAME);
+    fileStream(BUNDLE_JSON,BUNDLE);
     concatStream(BUILD_NAME)
-        .pipe(gulp.dest(DIST));
+        .pipe(gulp.dest(BUNDLE));
+    concatFileStream(bundleSrc,BUNDLE,'elliptical.component.bundle.js');
+    minFileStream(bundleSrc,BUNDLE,'elliptical.component.bundle.min.js');
 });
 
 gulp.task('demo',function(){
