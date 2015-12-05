@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+    <script src="demo_components/elliptical-component/dist/webcomponents.js"></script>
+    <link rel="stylesheet" href="demo_components/elliptical-sass/dist/elliptical.css">
+    <link rel="import" href="demo_components/sass-core-icons/sass-core-icons.html">
+    <link rel="stylesheet" href="demo_components/css-docs/docs.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=RobotoDraft:400,500,700,400italic" rel="stylesheet">
+</head>
+<body>
+<header>
+    <h4>Component Demo</h4>
+</header>
+<section>
+    <link rel="import" href="demo_components/mark-down/mark-down.html">
+    <link rel="import" href="demo_components/elliptical-component/elliptical-component.html">
+    <!-- NOTE: template element transposition handled by elliptical requires an attribute of property="elliptical"  -->
+    <link rel="import" href="demo_components/hello-world/hello-world.html" property="elliptical">
+    <link rel="import" href="demo_components/observable-list/observable-list.html" property="elliptical">
+    <link rel="import" href="demo_components/observable-detail/observable-detail.html" property="elliptical">
+    <link rel="import" href="demo_components/profile-template/profile-template.html" property="elliptical">
+    <grid-row>
+        <grid-columns class="default-12">
+            <h3>Examples</h3>
+            <hr>
+            Elliptical web components is a set of library packages that implement the W3C web component standard. It plays well other libraries, including other
+            component implementations such as Polymer. Indeed this page uses a Polymer component(mark-down) for code syntax highlighting. This modular structure allows
+            elliptical web components to be implemented separately as behaviors or mixins with libraries such as Polymer.
+            <p></p>
+            <h3 class="tag">Hello-World</h3>
+            <hr>
+            <hello-world></hello-world>
+            <mark-down>
+                ```html
+                <xmp><!--instance-->
+                    <hello-world></hello-world>
+                    </xmp>
+
+                <xmp><!--definition-->
+                    <hello-world definition>
+                        <template>
+                           <h4>Hello, World</h4>
+                        </template>
+                    </hello-world>
+                </xmp>
+
+                ```
+
+                ```js
+                Elliptical(function(){
+                   $.element('hello-world',{});
+                });
+
+                ```
+            </mark-down>
+            <p></p>
+            <h3 class="tag">Observable-List</h3>
+            <hr>
+            <observable-list template>
+                {#accounts}
+                <li>
+                    <input type="text" data-bind="value:accounts.{$0}.name" value="{name}">&nbsp;&nbsp;
+                    <span data-index="{$0}" style="cursor:pointer;" on-click="_onClick" class="icon-core-trash"></span>
+                </li>
+                {/accounts}
+                {^accounts}
+                <p class="warning">No data available...</p>
+                {/accounts}
+            </observable-list>
+
+            <mark-down>
+                ```html
+                <xmp><!--instance-->
+                    <observable-list template>
+                      {#accounts}
+                      <li>
+                          <input type="text" data-bind="value:accounts.{$0}.name" value="{name}">&nbsp;&nbsp;
+                          <span data-index="{$0}" style="cursor:pointer;" on-click="_onClick" class="icon-core-trash"></span>
+                      </li>
+                     {/accounts}
+                   </observable-list>
+
+                    <!--definition-->
+                    <observable-list definition>
+                        <template></template>
+                    </observable-list>
+                </xmp>
+
+                ```
+
+                ```js
+                Elliptical(function(){
+                  $.component('observable-list',{
+                     _initComponent:function(){
+                        var arr=[
+                          {name:'Bob Jackson',address:'7700 East Ave'},
+                          {name:'Steve Wright',address:'9300 West Blvd'},
+                          {name:'George Carlin',address:'14000 Kingsw Drive'}
+                        ];
+
+                        this.$scope.accounts=arr;
+                     },
+
+                     _onClick:function(event){
+                        var target=$(event.currentTarget);
+                        var index=target.attr('data-index');
+                        this.$scope.accounts.splice(index,1);
+                     },
+
+                     _onScopeChange:function(result){
+                         console.log(result);
+                     }
+                  });
+                });
+
+
+                ```
+            </mark-down>
+
+            <p></p>
+            <h3 class="tag">Profile-Template</h3>
+            <hr>
+            <profile-template scope="address" object-assign="true"></profile-template>
+            <p></p>
+            <profile-template data='{"name":"Brad Thompson","street":"63289 Arlington Road"}'>
+            </profile-template>
+            <mark-down>
+                ```html
+                <xmp><!--instances-->
+                    <profile-template scope="address" object-assign="true"></profile-template>
+                    <profile-template data='{"name":"Brad Thompson","street":"63289 Arlington Road"}'>
+
+                </xmp>
+
+                ```
+                ```js
+                var address={
+                   name:'Melissa Johnson',
+                   street:'1800 West Dr',
+                   city:'Charlotte',
+                   state:'NC',
+                   zip:88980,
+                   phone:'555-555-0000'
+                };
+                Elliptical.context.set('address',address);
+
+                ```
+
+                ```html
+                <xmp><!--definition-->
+                    <profile-template definition>
+                      <template>
+                        <div class="flex-template" template>
+                            <h4><span data-bind="text:name">{name}</span></h4>
+                            <div>
+                                <span>Name: </span>
+                                <input type="text" data-bind="value:name" value="{name}">
+                            </div>
+                            <div>
+                                <span>Street: </span>
+                                <input type="text" data-bind="value:street" value="{street}">
+                            </div>
+                            <div>
+                                <span>City: </span>
+                                <input type="text" data-bind="value:city" value="{city}">
+                            </div>
+                            <div>
+                                <span>State: </span>
+                                <input type="text" data-bind="value:state" value="{state}">
+                            </div>
+                            <div>
+                                <span>Zip: </span>
+                                <input type="text" data-bind="value:zip" value="{zip}">
+                            </div>
+                            <div>
+                                <span>Phone: </span>
+                                <input type="text" data-bind="value:phone" value="{phone}">
+                            </div>
+                        </div>
+                    </template>
+                </profile-template>
+                </xmp>
+                ```
+
+                ```js
+                Elliptical(function(){
+                    $.component('profile-template',{});
+                });
+
+                ```
+            </mark-down>
+            <p></p>
+            <h3>Documentation</h3>
+            <hr>
+            <h4>Element Factories</h4>
+            <p>The Elliptical-component library package defines two factories, $.element and $.component, that implement the web component standard over an extension of the jquery ui widget
+                factory. The difference between the two is that $.component extends $element base factory with observable, two-way data-binding.
+            </p>
+            <mark-down>
+                ```js
+                  $.element([Element],tag,[mixins],prototype);
+
+                  $.component([Element],tag,[mixins],prototype);
+
+                ```
+            </mark-down>
+            <section class="docs margin-top two">
+                <h4>Parameters</h4>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>Element</span>
+                    <flex-box class="column">
+                        <span>{Document Object}</span>
+                        <span>[optional]</span>
+                        <span>HTML Element Type</span>
+                    </flex-box>
+                    <span>HTMLElement</span>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>tag</span>
+                    <flex-box class="column">
+                        <span>{String}</span>
+                        <span class="error-label">required</span>
+                        <span>tag name</span>
+                    </flex-box>
+                    <span>default:null</span>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>mixins</span>
+                    <flex-box class="column">
+                        <span>{Array}</span>
+                        <span>[optional]</span>
+                        <span>object array of mixins</span>
+                    </flex-box>
+                    <span>default:null</span>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>prototype</span>
+                    <flex-box class="column">
+                        <span>{Object}</span>
+                        <span class="error-label">required</span>
+                        <span>methods and props for the element definition</span>
+                    </flex-box>
+                    <span>default:undefined</span>
+                </flex-box>
+            </section>
+            <section class="docs margin-top two">
+                <h4>Properties</h4>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span></span>
+                    <flex-box class="column">
+                        <span>{Document Object}</span>
+                        <span>[optional]</span>
+                        <span>HTML Element Type</span>
+                    </flex-box>
+                    <span>HTMLElement</span>
+                </flex-box>
+            </section>
+        </grid-columns>
+    </grid-row>
+
+</section>
+<footer>
+    <h5>Component Demo</h5>
+    <flex-box class="links">
+        <a href="https://github.com/ellipticaljs/paper-autocomplete/tree/master/demo">Demo Source</a>
+        <a href="https://github.com/ellipticaljs/paper-autocomplete">Project Home</a>
+    </flex-box>
+</footer>
+<script>
+    var address={
+        name:'Melissa Johnson',
+        street:'1800 West Dr',
+        city:'Charlotte',
+        state:'NC',
+        zip:88980,
+        phone:'555-555-0000'
+    };
+    Elliptical.context.set('address',address);
+</script>
+</body>
+</html>

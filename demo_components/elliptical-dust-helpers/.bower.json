@@ -1,0 +1,53 @@
+{
+  "name": "elliptical-dust-helpers",
+  "description": "Dust Helpers",
+  "version": "1.0.6",
+  "main": "dist/dust.helpers.js",
+  "authors": [
+    "S. Francis"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "dust",
+    "helpers"
+  ],
+  "homepage": "https://github.com/ellipticaljs/dust-helpers",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    ".gitignore",
+    ".npmignore",
+    "gulpfile.js",
+    "lib",
+    "docs",
+    "index.js",
+    "umd.js",
+    "package.json",
+    "demo",
+    "index.html",
+    "build.json",
+    "bundle.json",
+    ".nvmrc",
+    ".eslintrc",
+    "bin",
+    "CHANGELOG.md",
+    "demos"
+  ],
+  "dependencies": {
+    "elliptical-dustjs": "~2.7.3",
+    "elliptical-utils": "~2.0.0"
+  },
+  "_release": "1.0.6",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.0.6",
+    "commit": "75dcf4c2278a7d9a85730b64cd13c09e9f29b119"
+  },
+  "_source": "git://github.com/ellipticaljs/dust-helpers.git",
+  "_target": "~1.0.1",
+  "_originalSource": "elliptical-dust-helpers"
+}

@@ -1,0 +1,46 @@
+<style>
+    observable-detail{
+        margin-top:2em;
+        display:flex;
+        flex-direction:column;
+        width:300px;
+
+    }
+    observable-detail>*{
+        margin:1em 0;
+    }
+    observable-detail>.profile{
+        display:flex;
+        flex-direction:column;
+    }
+    observable-detail>.profile>*{
+        margin:1em 0;
+    }
+    observable-detail>.profile>button{
+        width:100px;
+    }
+
+</style>
+<observable-detail definition parse-attr>
+    <template>
+        <h3>[[title]]</h3>
+        <content></content>
+    </template>
+</observable-detail>
+<script>
+    Elliptical(function(){
+        $.component('observable-detail',{
+            _initComponent:function(){
+                this.$scope={
+                    name:'Bob Jackson',
+                    address:'4600 West Drive'
+                };
+
+            },
+
+            _onScopeChange:function(result){
+                console.log(result);
+            }
+        });
+    });
+</script>

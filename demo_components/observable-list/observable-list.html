@@ -1,0 +1,46 @@
+<style>
+    observable-list{
+        display:flex;
+        flex-direction:column;
+    }
+    observable-list li{
+        display:flex;
+        width:400px;
+        max-width:100%;
+        margin:1em 0;
+    }
+    observable-list p{
+        border-radius:2px;
+        padding:.5em;
+        width:400px;
+        max-width:100%;
+    }
+</style>
+<observable-list definition>
+    <template></template>
+</observable-list>
+<script>
+    Elliptical(function(){
+        $.component('observable-list',{
+            _initComponent:function(){
+                var arr=[
+                    {name:'Bob Jackson',address:'7700 East Ave'},
+                    {name:'Steve Wright',address:'9300 West Blvd'},
+                    {name:'George Carlin',address:'14000 Kingsw Drive'}
+                ];
+
+                this.$scope.accounts=arr;
+            },
+
+            _onClick:function(event){
+                var target=$(event.currentTarget);
+                var index=target.attr('data-index');
+                this.$scope.accounts.splice(index,1);
+            },
+
+            _onScopeChange:function(result){
+                console.log(result);
+            }
+        });
+    });
+</script>

@@ -1,0 +1,31 @@
+{
+  "name": "Object-observe",
+  "description": "Object.observe polyfill/shim",
+  "version":"0.0.6",
+  "main": "dist/Object.observe.js",
+  "authors": [
+    "Jeremy Darling,S. Francis"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "Object",
+    "observe"
+  ],
+  "homepage": "https://github.com/ellipticaljs/Object.observe",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "build",
+    "examples",
+    ".gitattributes",
+    ".gitignore",
+    ".travis.yml",
+    "gulpfile.js",
+    "index.js",
+    "package.json"
+  ]
+}

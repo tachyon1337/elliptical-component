@@ -1,0 +1,41 @@
+{
+  "name": "elliptical-jquery-ui",
+  "version":"1.11.7",
+  "main": "dist/widget.js",
+  "ignore": [
+    "**/.*",
+    "build",
+    "demos",
+    "external",
+    "tests",
+	".gitignore",
+	".npmignore",
+	"gulpfile.js",
+	"lib",
+	"docs",
+	"index.js",
+	"umd.js",
+	"package.json",
+	"demo",
+	"index.html",
+	"build.json",
+	"bundle.json",
+	"build",
+	"Gruntfile.js",
+	"AUTHORS.txt",
+	"CONTRIBUTING.md",
+	".travis.yml",
+	".editorconfig",
+	".gitattributes",
+	".jscsrc",
+	".jshintignore",
+	".jshintrc",
+	".mailmap",
+	"src",
+	"external",
+	"demos"
+  ],
+  "dependencies": {
+    "elliptical-jquery": ">=3.0.0"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "name": "observable-component",
+  "description": "An observable two-way data-binding platform for web components",
+  "version": "1.0.9",
+  "main": "dist/observable-component.js",
+  "authors": [
+    "S. Francis"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "two-way",
+    "data-binding",
+    "object.observe",
+    "web",
+    "components"
+  ],
+  "homepage": "https://github.com/ellipticaljs/observable-component",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    ".gitignore",
+    ".npmignore",
+    "gulpfile.js",
+    "lib",
+    "docs",
+    "index.js",
+    "umd.js",
+    "package.json",
+    "demo",
+    "index.html",
+    "build.json",
+    "bundle.json",
+    ".nvmrc",
+    ".eslintrc",
+    "bin",
+    "CHANGELOG.md",
+    "demos"
+  ],
+  "dependencies": {
+    "component-extensions": "~1.0.1",
+    "elliptical-event": "~1.0.0",
+    "Nested.observe": "~0.1.7"
+  }
+}

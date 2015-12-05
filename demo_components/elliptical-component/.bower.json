@@ -1,0 +1,60 @@
+{
+  "name": "elliptical-component",
+  "description": "Observable web components",
+  "version": "1.0.13",
+  "main": "dist/elliptical.component.js",
+  "authors": [
+    "S. Francis"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "observable",
+    "web",
+    "components"
+  ],
+  "homepage": "https://github.com/ellipticaljs/component",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    ".gitignore",
+    ".npmignore",
+    "gulpfile.js",
+    "lib",
+    "docs",
+    "index.js",
+    "umd.js",
+    "package.json",
+    "demo",
+    "index.html",
+    "build.json",
+    "bundle.json",
+    ".nvmrc",
+    ".eslintrc",
+    "bin",
+    "CHANGELOG.md",
+    "demos",
+    "stylesheets",
+    "_index.scss",
+    "bk"
+  ],
+  "dependencies": {
+    "observable-component": "~1.0.2",
+    "elliptical-mutation-summary": "~1.0.1",
+    "elliptical-event": "~1.0.0",
+    "elliptical-jquery-ui": "~1.11.3"
+  },
+  "_release": "1.0.13",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.0.13",
+    "commit": "9cb02b7ebd795ddb778c9c43a659c37c84f198b6"
+  },
+  "_source": "git://github.com/ellipticaljs/component.git",
+  "_target": "~1.0.13",
+  "_originalSource": "elliptical-component",
+  "_direct": true
+}

@@ -1,0 +1,50 @@
+{
+  "name": "Nested.observe",
+  "description": "Object.observe() for nested objects.",
+  "version": "0.1.8",
+  "main": "./dist/nested-observe.js",
+  "authors": [
+    "Markus Ast, S. Francis"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "observe",
+    "es6",
+    "harmony"
+  ],
+  "homepage": "https://github.com/ellipticaljs/nested-observe",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    ".gitignore",
+    ".npmignore",
+    "gulpfile.js",
+    "lib",
+    "docs",
+    "index.js",
+    "umd.js",
+    "package.json",
+    "demo",
+    "index.html",
+    "build.json",
+    "bundle.json",
+    ".nvmrc",
+    ".eslintrc"
+  ],
+  "dependencies": {
+    "Object-observe": "~0.0.4"
+  },
+  "_release": "0.1.8",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.1.8",
+    "commit": "496d56d85381ab7fa0ed9bcf633a66f5c534f3c8"
+  },
+  "_source": "git://github.com/ellipticaljs/nested-observe.git",
+  "_target": "~0.1.7",
+  "_originalSource": "Nested.observe"
+}

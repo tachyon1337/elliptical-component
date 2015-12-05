@@ -45,6 +45,11 @@
     "observable-component": "~1.0.2",
     "elliptical-mutation-summary": "~1.0.1",
     "elliptical-event": "~1.0.0",
-    "elliptical-jquery-ui": "~1.11.3"
+    "elliptical-jquery-ui": "~1.11.3",
+    "elliptical-sass": "~1.1.12",
+    "elliptical-component": "~1.0.13",
+    "css-docs": "elliptical-css-docs#~1.0.1",
+    "sass-core-icons": "~1.0.4",
+    "mark-down": "elliptical-mark-down#~1.0.5"
   }
 }

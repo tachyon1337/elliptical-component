@@ -1,0 +1,50 @@
+{
+  "name": "elliptical-jquery",
+  "description": "JavaScript library for DOM operations",
+  "version":"3.0.8",
+  "main": "dist/jquery.js",
+  "authors": [
+    "[object Object]"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "jquery",
+    "javascript",
+    "browser",
+    "library"
+  ],
+  "homepage": "https://github.com/ellipticaljs/jquery",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    ".gitignore",
+    ".npmignore",
+    "gulpfile.js",
+    "lib",
+    "docs",
+    "index.js",
+    "umd.js",
+    "package.json",
+    "demo",
+    "index.html",
+    "build.json",
+    "bundle.json",
+    "build",
+    "Gruntfile.js",
+    "AUTHORS.txt",
+    "CONTRIBUTING.md",
+    ".travis.yml",
+    ".editorconfig",
+    ".gitattributes",
+    ".jscsrc",
+    ".jshintignore",
+    ".jshintrc",
+    ".mailmap",
+    "src",
+    "external"
+  ]
+}

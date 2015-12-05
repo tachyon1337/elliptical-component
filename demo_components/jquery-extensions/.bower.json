@@ -1,0 +1,47 @@
+{
+  "name": "jquery-extensions",
+  "description": "jquery extensions library",
+  "version": "1.0.5",
+  "main": "dist/jquery.extensions.js",
+  "authors": [
+    "S. Francis"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "jquery",
+    "extensions"
+  ],
+  "homepage": "https://github.com/ellipticaljs/jquery-extensions",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    ".gitignore",
+    ".npmignore",
+    "gulpfile.js",
+    "lib",
+    "docs",
+    "index.js",
+    "umd.js",
+    "package.json",
+    "demo",
+    "index.html",
+    "build.json",
+    "bundle.json"
+  ],
+  "dependencies": {
+    "elliptical-jquery": ">=3.0.0"
+  },
+  "_release": "1.0.5",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.0.5",
+    "commit": "83141159a9cda3baedd51b93a44628706c8018cf"
+  },
+  "_source": "git://github.com/ellipticaljs/jquery-extensions.git",
+  "_target": "~1.0.0",
+  "_originalSource": "jquery-extensions"
+}
