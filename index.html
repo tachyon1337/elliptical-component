@@ -285,6 +285,11 @@
         phone:'555-555-0000'
     };
     Elliptical.context.set('address',address);
+    Elliptical(function(){
+        var observableList=document.querySelector('observable-list');
+        console.log(observableList.$scope);
+        observableList.log('test message');
+    });
 </script>
 </body>
 </html>

@@ -421,10 +421,52 @@
             var evt_ = this.widgetName.toLowerCase() + '.loaded';
             $(window).trigger(evt_, { target: this.element });
             this.__componentCallbacks();
+            this._bindPublicPropsToElement();
         },
 
         _publishLoaded: function(){
             this._triggerEvent('loaded',this.element);
+        },
+
+        _bindPublicPropsToElement:function(){
+            var prototype=Object.getPrototypeOf(this);
+            var node=this.element[0];
+            var self=this;
+            this._iterateForPublicProps(node,this);
+            for(var prop in prototype){
+                if(prototype.hasOwnProperty(prop)){
+                    this._assignPublicMethods(node,prototype,prop,self);
+                    this._assignPublicProps(node,prototype,prop,self);
+                }
+            }
+        },
+
+        _iterateForPublicProps:function(node,obj){
+            var self=this;
+            for(var prop in obj){
+                if(obj.hasOwnProperty(prop)){
+                    this._assignPublicProps(node,obj,prop,self);
+                }
+            }
+        },
+
+        _assignPublicMethods:function(node,obj,prop,context){
+            if(prop.indexOf('_')!==0 && typeof obj[prop]==='function'){
+                node[prop]=function(){
+                    context[prop].apply(context,arguments);
+                }
+            }
+        },
+
+        _assignPublicProps:function(node,obj,prop,context){
+            if(prop.indexOf('$')===0 && typeof obj.prop !=='function'){
+                Object.defineProperty(node, prop, {
+                    get: function() { return context[prop]; },
+                    set: function(newValue) { context[prop] = newValue; },
+                    enumerable: true,
+                    configurable: true
+                });
+            }
         },
 
         /**
