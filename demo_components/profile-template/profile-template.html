@@ -3,6 +3,7 @@
         display:block;
         width:400px;
         max-width:100%;
+        margin-bottom:4em;
     }
     profile-template .flex-template{
         display:-webkit-flex;
@@ -23,8 +24,8 @@
     }
     profile-template .flex-template>div>input{
         min-width:200px;
-
     }
+
 </style>
 <profile-template definition>
     <template>
@@ -54,11 +55,26 @@
                 <span>Phone: </span>
                 <input type="text" data-bind="value:phone" value="{phone}">
             </div>
+            <button class="ui-button">Submit</button>
         </div>
     </template>
 </profile-template>
 <script>
     Elliptical(function(){
-        $.component('profile-template',{});
+        $.component('profile-template',{
+
+            _events:{
+                'button@click':'_onClick',
+                'input@focus':'_onFocus'
+            },
+
+            _onClick:function(event){
+                console.log(event);
+            },
+
+            _onFocus:function(event){
+                console.log(event);
+            }
+        });
     });
 </script>

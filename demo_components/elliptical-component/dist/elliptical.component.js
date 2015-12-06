@@ -300,10 +300,6 @@
         };
 
         proto.attributeChangedCallback = function (n, o, v) {
-            if (n === 'loaded') {
-                this.removeAttribute('ui-preload');
-            }
-
             if (this._attributeChangedCallback) {
                 this._attributeChangedCallback(n, o, v);
             }
@@ -406,6 +402,10 @@
             }
         },
 
+        _press:function(){
+            return ('ontouchend' in document) ? 'touchend' : 'click';
+        },
+
         _onCreate: function(){
             if(this._created){
                 return;
@@ -418,8 +418,6 @@
             this.__onInit();
             this._delegateEventListener();
             this._setChildrenAttributes();
-            var evt_ = this.widgetName.toLowerCase() + '.loaded';
-            $(window).trigger(evt_, { target: this.element });
             this.__componentCallbacks();
             this._bindPublicPropsToElement();
         },
@@ -469,6 +467,37 @@
             }
         },
 
+        __bindEvents:function(){
+            var events=this._events;
+            for(var prop in events){
+                if(events.hasOwnProperty(prop)){
+                    this.__bindEvent(events,prop)
+                }
+            }
+        },
+
+        __bindEvent:function(events,prop){
+            var event;
+            var method=events[prop];
+            var eventParams=prop.split('@');
+            var length=eventParams.length;
+            if(length===1){
+                event=this.__getEvent(eventParams[0]);
+                this._event(this.element,event,this[method].bind(this));
+            }else if(length===2){
+                var selector=eventParams[0];
+                event=this.__getEvent(eventParams[1]);
+                if(selector==='document' || selector==='window') this._event($(selector),event,this[method].bind(this));
+                else this._event(this.element,event,selector,this[method].bind(this))
+            }
+        },
+
+        __getEvent:function(evt){
+            if(evt==='click') return this._data.click;
+            else if(evt==='press') return this._press();
+            else return evt;
+        },
+
         /**
          * init Element
          */
@@ -479,7 +508,7 @@
          * @private
          */
         __onInit:function(){
-            this._events();
+            this.__bindEvents();
             this._onInit();
         },
 
@@ -492,70 +521,42 @@
         /**
          * called by default by _onInit; event listener registrations should go here, although this is not a requirement
          */
-        _events: $.noop,
+        _events: {},
+
 
         /**
-         * event facade
-         * register an event listener that is automatically disposed on _destroy()
-         * if unbind=true, it is destroyed on any call to _unbindEvents() within the $.element lifecycle
-         * NOTE: using the _event facade for event handling not a requirement, just a convenience. The convenience of this
-         * facade pattern is not in writing event handlers per se, but in automating the cleanup
-         *
-         *
-         * NOTE: the facade wrapper supports event delegation but does not automatically delegate
-         * this._event(li,click,function(event){}) ---> no delegation, listener is attached to each li
-         * this._event(ul,click,'li',function(event){}) -->delegation, listener is attached to ul, li clicks bubble up
+         * event
          *
          * @param element {Object}
          * @param event {String}
          * @param selector {String}
-         * @param unbind {Boolean}
          * @param callback {Function}
          * @private
          */
-        _event: function (element, event, selector,unbind,callback) {
+        _event: function (element, event, selector,callback) {
             var obj = {};
             obj.element = element;
             obj.event = event;
 
-            //support 3-5 params
-            var length=arguments.length;
-            if(length===3){
-                callback=(typeof selector==='function') ? selector : null;
-                unbind=false;
-                selector=null;
-            }else if(length===4){
-                callback=(typeof unbind==='function') ? unbind : null;
-                if(typeof selector==='boolean'){
-                    unbind=selector;
-                    selector=null;
-                }else{
-                    unbind=false;
-                }
+            //support 3-4 params
+            var length = arguments.length;
+            if (length === 3) {
+                callback = (typeof selector === 'function') ? selector : null;
+                selector = null;
             }
-            obj.selector=selector;
-            obj.unbind = unbind;
-            obj.callback=callback;
-            if(!this._data || !this._data.events){
-                return;
-            }
-            var arr = this._data.events;
-            if ($.inArray(obj, arr) === -1) {
-                this._data.events.push(obj);
-            }
-            if(selector){
-                element.on(event,selector,function(){
+            obj.selector = selector;
+            obj.callback = callback;
+            var arr = this._events;
+            if ($.inArray(obj, arr) === -1) this._data.events.push(obj);
+            if (selector) {
+                element.on(event, selector, function () {
                     var args = [].slice.call(arguments);
-                    if(callback){
-                        callback.apply(this,args);
-                    }
+                    if (callback) callback.apply(this, args);
                 });
-            }else{
-                element.on(event,function(){
+            } else {
+                element.on(event, function () {
                     var args = [].slice.call(arguments);
-                    if(callback){
-                        callback.apply(this,args);
-                    }
+                    if (callback) callback.apply(this, args);
                 });
             }
 
@@ -564,34 +565,17 @@
         /**
          * unbinds registered event listeners. When called from _destroy(), all events are disposed, regardless.
          * If called during the $.element lifecycle, events are disposed if unbind flag was set at registration
-         * @param destroy {Boolean}
          * @private
          */
-        _unbindEvents: function (destroy) {
-            if (typeof destroy === 'undefined') {
-                destroy = false;
+        _unbindEvents: function () {
+            var events = this._data.events;
+            var length = events.length;
+            for (var i = 0; i < length; i++) {
+                var obj = events[i];
+                (obj.selector) ? obj.element.off(obj.event, obj.selector) : obj.element.off(obj.event);
             }
-            if(!this._data || !this._data.events){
-                return;
-            }
-            var events=this._data.events;
-            $.each(events, function (index, obj) {
-                if (!destroy) {
-                    if (obj.unbind) {
-                        (obj.selector) ? obj.element.off(obj.event,obj.selector) : obj.element.off(obj.event);
-                        events.splice(index,1);
-                    }
-                } else {
-                    (obj.selector) ? obj.element.off(obj.event,obj.selector) : obj.element.off(obj.event);
-                    obj=null;
-                }
-            });
-
-            if (destroy) {
-                events.length=0;
-                this._onUnbindEvents();
-            }
-
+            events.length = 0;
+            this._onUnbindEvents();
         },
 
         /**
@@ -632,7 +616,7 @@
                 return;
             }
             this._triggerEvent('destroyed',this.element);
-            this._unbindEvents(true);
+            this._unbindEvents();
             this._dispose();
             this._onDestroy();
             $.removeData(this.element[0],'custom-' + this.widgetName);
@@ -1242,10 +1226,12 @@
             return (scopeProp && context) ? context[scopeProp] : undefined;
         },
 
-
-        scope:function(){
-            return this.$scope;
+        __onTemplateVisibility:function(){
+            if(this.hasAttribute('ui-preload')) this.removeAttribute('ui-preload');
+            this._onTemplateVisibility();
         },
+
+        _onTemplateVisibility:function(){},
 
         runInit:function(){
             this._initComponent();
