@@ -36,16 +36,17 @@
             <hello-world></hello-world>
             <mark-down>
                 ```html
-                <xmp><!--instance-->
-                    <hello-world></hello-world>
-                    </xmp>
-
-                <xmp><!--definition-->
-                    <hello-world definition>
-                        <template>
-                           <h4>Hello, World</h4>
-                        </template>
-                    </hello-world>
+                <xmp>
+                <!--instance-->
+                <hello-world></hello-world>
+                </xmp>
+                <xmp>
+                <!--definition-->
+                <hello-world definition>
+                    <template>
+                        <h4>Hello, World</h4>
+                    </template>
+                </hello-world>
                 </xmp>
 
                 ```
@@ -60,7 +61,7 @@
             <p></p>
             <h3 class="tag">Observable-List</h3>
             <hr>
-            <observable-list template>
+            <observable-list template test="two">
                 {#accounts}
                 <li>
                     <input type="text" data-bind="value:accounts.{$0}.name" value="{name}">&nbsp;&nbsp;
@@ -75,19 +76,19 @@
             <mark-down>
                 ```html
                 <xmp><!--instance-->
-                    <observable-list template>
-                      {#accounts}
-                      <li>
-                          <input type="text" data-bind="value:accounts.{$0}.name" value="{name}">&nbsp;&nbsp;
-                          <span data-index="{$0}" style="cursor:pointer;" on-click="_onClick" class="icon-core-trash"></span>
-                      </li>
-                     {/accounts}
-                   </observable-list>
+                <observable-list template>
+                  {#accounts}
+                    <li>
+                      <input type="text" data-bind="value:accounts.{$0}.name" value="{name}">&nbsp;&nbsp;
+                      <span data-index="{$0}" style="cursor:pointer;" on-click="_onClick" class="icon-core-trash"></span>
+                    </li>
+                  {/accounts}
+                </observable-list>
 
-                    <!--definition-->
-                    <observable-list definition>
-                        <template></template>
-                    </observable-list>
+                <!--definition-->
+                <observable-list definition>
+                  <template></template>
+                </observable-list>
                 </xmp>
 
                 ```
@@ -131,9 +132,8 @@
             <mark-down>
                 ```html
                 <xmp><!--instances-->
-                    <profile-template scope="address" object-assign="true"></profile-template>
-                    <profile-template data='{"name":"Brad Thompson","street":"63289 Arlington Road"}'>
-
+                <profile-template scope="address" object-assign="true"></profile-template>
+                <profile-template data='{"name":"Brad Thompson","street":"63289 Arlington Road"}'>
                 </xmp>
 
                 ```
@@ -146,13 +146,13 @@
                    zip:88980,
                    phone:'555-555-0000'
                 };
-                Elliptical.context.set('address',address);
+                Elliptical.viewData.set('address',address);
 
                 ```
 
                 ```html
                 <xmp><!--definition-->
-                    <profile-template definition>
+                <profile-template definition>
                       <template>
                         <div class="flex-template" template>
                             <h4><span data-bind="text:name">{name}</span></h4>
@@ -198,8 +198,9 @@
             <hr>
             <h4>Element Factories</h4>
             <p>The Elliptical-component library package defines two factories, $.element and $.component, that implement the web component standard over an extension of the jquery ui widget
-                factory. The difference between the two is that $.component extends $element base factory with observable, two-way data-binding.
+                factory. The difference between the two is that $.component extends the $.element base factory with observable, two-way data-binding.
             </p>
+
             <mark-down>
                 ```js
                   $.element([Element],tag,[mixins],prototype);
@@ -208,6 +209,14 @@
 
                 ```
             </mark-down>
+
+            <blockquote class="info margin-top two">
+                <span class="bold">NOTE:</span> The prototype object passed to the elliptical component factories above lives in the jquery object prototype chain. It will be referred to as
+                the <span class="bold">Component Prototype</span>. This differs from the <span class="bold">Custom Element Prototype</span> which lives on the DOM Object
+                prototype chain. Elliptical exposes public properties and methods on the component prototype to the custom element prototype. The converse, however, is not
+                true. That is, if public properties and methods are defined directly on the custom element prototype, they will not be available on the component prototype.
+            </blockquote>
+
             <section class="docs margin-top two">
                 <h4>Parameters</h4>
                 <hr>
@@ -218,7 +227,10 @@
                         <span>[optional]</span>
                         <span>HTML Element Type</span>
                     </flex-box>
-                    <span>HTMLElement</span>
+                    <flex-box class="column last">
+                        <span>default:</span>
+                        <span>HTMLElement</span>
+                    </flex-box>
                 </flex-box>
                 <hr>
                 <flex-box class="space-between full-width row">
@@ -251,19 +263,1200 @@
                     <span>default:undefined</span>
                 </flex-box>
             </section>
+
+            <h4 class="margin-top two">Lifecycle Callbacks</h4>
+            <hr>
+            <p>
+                Elliptical web components exposes the 4 W3C defined lifecycle callbacks in the following manner.
+            </p>
+
+            <mark-down>
+                ```js
+                $.element('my-tag',{
+                     //created,attached
+                    _initElement:function(){
+
+                    },
+
+                    //attributeChanged
+                    _attributeChanged:function(attrName,oldValue,newValue){
+
+                   },
+
+                   //detached
+                   _detached:function(){
+
+                   }
+                });
+
+                $.component('my-tag',{
+                     //created,attached
+                   _initComponent:function(){
+
+                   },
+
+                    //attributeChanged
+                    _attributeChanged:function(attrName,oldValue,newValue){
+
+                   },
+
+                   //detached
+                   _detached:function(){
+
+                   }
+                });
+
+
+                ```
+            </mark-down>
+
+            <p class="margin-top two">AttributeChanged and Detached are also available directly on the custom element prototype chain.</p>
+
+            <mark-down>
+                ```js
+                var myElement=document.querySelector('my-element');
+                myElement.attributeChanged=function(attrName,oldValue,newValue){
+
+                };
+
+                myElement.detached=function(){
+
+                };
+
+                ```
+            </mark-down>
+
+            <h4 class="margin-top two">Properties and Attributes</h4>
+            <hr>
+            Public properties can be declared via element attributes or imperatively defined in the options property on the component prototype(a la jquery plugins). Getters and
+            setters are defined for public properties on both the component prototype chain and the custom element(DOM) prototype chain.
+            <mark-down class="margin-top two">
+                ```html
+                <xmp>
+                <my-element foo="bar"></my-element>
+                </xmp>
+                ```
+
+                ```js
+                $.element('my-element',{
+
+                    options:{
+                        myProp:'test'
+                    },
+
+                    _initElement:function(){
+                        var foo=this.foo; //-->'bar'
+                        var myProp=this.myProp; //-->'test'
+                    }
+                });
+
+                var myElement=document.querySelector('my-element');
+                var foo=myElement.foo; //-->'bar'
+                ```
+            </mark-down>
+
             <section class="docs margin-top two">
-                <h4>Properties</h4>
+                <h4>Reserved Public Properties</h4>
                 <hr>
                 <flex-box class="space-between full-width row">
-                    <span></span>
+                    <span>scope</span>
                     <flex-box class="column">
-                        <span>{Document Object}</span>
-                        <span>[optional]</span>
-                        <span>HTML Element Type</span>
+                        <span>{String}</span>
+                        <span>Specifies a property in the current ViewData context to assign to the component $scope.</span>
+                        <span>$scope[scope]=$viewBag[scope]</span>
+                        <span>OR: if a local data context is set, defines the property map to the component $scope</span>
+                        <span>$scope[scope]=data</span>
                     </flex-box>
-                    <span>HTMLElement</span>
+                    <span>$.component</span>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>data</span>
+                    <flex-box class="column">
+                        <span>{Object|Array}</span>
+                        <span>the stringified local data context assigned to the component $scope. If data is an object, $scope is set equal to data, unless a scope
+                        attribute is set. In that case, $scope[scope]=data. If data is an array, the scope attribute must be set, otherwise data is ignored.</span>
+                    </flex-box>
+                    <span>$.component</span>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>$scope</span>
+                    <flex-box class="column">
+                        <span>{Object}</span>
+                        <span>The Observable, template-bound property</span>
+                        <span>$scope MUST be an OBJECT</span>
+                        <span>$scope can be deep(nested) with arbitrary property types(.e.g, arrays)</span>
+                        <span>default:{}</span>
+                    </flex-box>
+                    <span>$.component</span>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>$viewBag</span>
+                    <flex-box class="column">
+                        <span>{Object|Array}</span>
+                        <span>returns the current ViewData context</span>
+                    </flex-box>
+                    <span>$.component</span>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>objectAssign</span>
+                    <flex-box class="column">
+                        <span>{Boolean}</span>
+                        <span>assigns the 'scope' property on the ViewData context directly to the $scope</span>
+                        <span>$scope=$viewBag[scope]</span>
+                        <span>default:false</span>
+                    </flex-box>
+                    <span>$.component</span>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>scopeBind</span>
+                    <flex-box class="column">
+                        <span>{Boolean}</span>
+                        <span>scopeBind set to false disables $scope as an observable</span>
+                        <span>default:false</span>
+                    </flex-box>
+                    <span>$.component</span>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>autoRebind</span>
+                    <flex-box class="column">
+                        <span>{Boolean}</span>
+                        <span>Auto-rebinds template on array inserts/deletes</span>
+                        <span>default:true</span>
+                    </flex-box>
+                    <span>$.component</span>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>service</span>
+                    <flex-box class="column">
+                        <span>{String}</span>
+                        <span>Service name for service location/dependency injection</span>
+                        <span>default:null</span>
+                    </flex-box>
+                    <span>$.component</span>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>template</span>
+                    <flex-box class="column">
+                        <span>{undefined}</span>
+                        <span>attribute that defines the template DOM for a component</span>
+                        <span>(i)the inner html is compiled and rendered as a dustjs template</span>
+                        <span>(ii) the template DOM is bound to the observable $scope</span>
+                        <span>(iii)the template attribute can be set in the definition or instance</span>
+                        <span>(iv) the attribute has no value assigned</span>
+                    </flex-box>
+                    <span>$.component</span>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>proxyUpgrade</span>
+                    <flex-box class="column">
+                        <span>{Boolean}</span>
+                        <span>no template transposition if set to true</span>
+                        <span>default:false</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.element</span>
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>channel</span>
+                    <flex-box class="column">
+                        <span>{String}</span>
+                        <span>PubSub channel</span>
+                        <span>default:null</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>event</span>
+                    <flex-box class="column">
+                        <span>{String}</span>
+                        <span>PubSub event</span>
+                        <span>default:null</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
                 </flex-box>
             </section>
+
+            <blockquote class="warning margin-top two">
+                <span class="bold">NOTE:</span> properties prefaced with "$" cannot be publicly declared. They are recognized only if set directly on the component prototype from
+                within the component init events.
+            </blockquote>
+
+            <h4 class="margin-top two">Methods</h4>
+            <hr>
+            <p>
+                Methods prefaced with an underscore "_" are considered private methods and are only available on the component prototype. Public methods are available on both component and
+                custom element prototype chains.
+            </p>
+
+           <mark-down>
+               ```js
+               $.element('my-element',{
+
+                   log:function(msg){
+                       console.log(msg);
+                   }
+
+               });
+
+               var myElement=document.querySelector('my-element');
+               myElement.log('test'); //--> 'test'
+
+
+               ```
+           </mark-down>
+
+            <section class="docs margin-top two">
+                <h4>Public Methods</h4>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>hide</span>
+                    <flex-box class="column">
+                        <span>params:none</span>
+                        <span>hides a component</span>
+                        <span>returns:{void}</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.element</span>
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>show</span>
+                    <flex-box class="column">
+                        <span>params:none</span>
+                        <span>shows a component</span>
+                        <span>returns:{void}</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.element</span>
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>$service</span>
+                    <flex-box class="column">
+                        <span>param:{String} name</span>
+                        <span>returns a service(singleton,constructor,prototype,class)</span>
+                        <span>returns: {*}</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.element</span>
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>$serviceAsync</span>
+                    <flex-box class="column">
+                        <span>param:{String} name</span>
+                        <span>param:{Function} callback</span>
+                        <span>async returns a service(singleton,constructor,prototype,class)</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.element</span>
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>runInit</span>
+                    <flex-box class="column">
+                        <span>params:none</span>
+                        <span>runs the component init method</span>
+                        <span>returns: {void}
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.element</span>
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>$rebind</span>
+                    <flex-box class="column">
+                        <span>params:none</span>
+                        <span>rebinds the component template DOM</span>
+                        <span>returns:{void}</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>onScopeChange</span>
+                    <flex-box class="column">
+                        <span>param:{Function} callback</span>
+                        <span>returns the $scope changeRecords in the callback</span>
+                        <span>returns:{Array} [in the callback]</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>changeReport</span>
+                    <flex-box class="column">
+                        <span>param:{Object} oldValue</span>
+                        <span>param:{Object} newValue</span>
+                        <span>returns the change between two objects</span>
+                        <span>returns: {Object}</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+            </section>
+
+            <blockquote class="warning margin-top two">
+                <span class="bold">NOTE:</span> methods prepended with a "$" indicate these methods should not be overwritten.
+            </blockquote>
+
+            <h4 class="margin-top two">Events</h4>
+            <hr>
+            <p>Add event listeners to the component by providing a events object that maps events to event handler function names.</p>
+            <p>You can also add an event through the private method, this._event</p>
+
+            <mark-down>
+                ```js
+                $.element('my-element',{
+
+                     _events:{
+                        'input@focus': '_onFocus'
+                     },
+
+                     _onFocus:function(event){
+
+                     }
+
+                });
+
+                ```
+                ```js
+                $.element('my-element',{
+
+                    _initElement:function(){
+                        this._event(this.element,this._data.click,'input',this._onFocus.bind(this));
+                    },
+
+                    _onFocus:function(event){
+
+                    }
+
+                });
+
+                //syntax
+                _events:{
+                  'selector@event':'handler'
+                }
+
+                //if selector is omitted, the event is dispatched on the custom element
+                //selector is a descendant selector, the parent is the custom element
+                //UNLESS:
+                //selector=window or document
+
+                ```
+            </mark-down>
+
+            <section class="docs margin-top two">
+                <h4>this._event(parent,event,[selector],handler)</h4>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>parent</span>
+                    <flex-box class="column">
+                        <span>{Object}</span>
+                        <span>The DOM or parent DOM the listener is attached to</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span></span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>event</span>
+                    <flex-box class="column">
+                        <span>{String}</span>
+                        <span>event name</span>
+                        <span>NOTE:</span>
+                        <span>this._data.click=desktop/mobile click</span>
+                        <span>this._data.press=desktop/mobile press</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span></span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>selector</span>
+                    <flex-box class="column">
+                        <span>{String}</span>
+                        <span>descendant selector</span>
+                        <span>Optional</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span></span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>handler</span>
+                    <flex-box class="column">
+                        <span>{Function}</span>
+                        <span>The event handler</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span></span>
+                    </flex-box>
+                </flex-box>
+            </section>
+
+            <h5 class="margin-top two">Annotated Event Handling</h5>
+            <p>To add a click listener to local DOM children, use the 'on-click' annotation in your template.</p>
+
+            <mark-down>
+                ```html
+                <xmp>
+               <span on-click="_onClick">Click</span>
+                </xmp>
+                ```
+            </mark-down>
+
+
+            <h4 class="margin-top two">PubSub</h4>
+            <hr>
+            <p>$.component exposes an additional pubsub system apart from the DOM for event listeners.</p>
+
+            <mark-down>
+                ```js
+                $.component('my-element',{
+
+                  _subscriptions:{
+
+                     'my.channel':'_channelHandler'
+
+                  },
+
+                  _channelHandler:function(data){
+
+
+                  }
+
+                });
+                ```
+            </mark-down>
+
+            <p class="margin-top two">You can also subscribe to a channel through the private method, this._subscribe.</p>
+            <p>You can publish to a channel through the private method, this._publish.</p>
+
+            <mark-down>
+                ```js
+                this._subscribe('my.channel',this._handler.bind(this));
+
+                _handler:function(data){
+
+
+                }
+
+                this._publish('my.channel',{test:'test'});
+
+                ```
+            </mark-down>
+
+            <section class="docs margin-top two">
+                <h4>this._subscribe(channel,handler)</h4>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>channel</span>
+                    <flex-box class="column">
+                        <span>{String}</span>
+                        <span>channel name</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>handler</span>
+                    <flex-box class="column">
+                        <span>{Function}</span>
+                        <span>channel handler</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+            </section>
+
+            <section class="docs margin-top two">
+                <h4>this._publish(channel,data)</h4>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>channel</span>
+                    <flex-box class="column">
+                        <span>{String}</span>
+                        <span>channel name</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>data</span>
+                    <flex-box class="column">
+                        <span>{Object}</span>
+                        <span>channel data</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+            </section>
+
+
+            <h4 class="margin-top two">Private Data Store</h4>
+            <hr>
+            The component prototype exposes a private data store, this._data.
+
+            <mark-down>
+                ```js
+                this._data.set('my-key',{test:'test'');
+
+                var myData=this._data.get('my-key'); //--->{test:'test'}
+
+                ```
+            </mark-down>
+
+            <section class="docs margin-top two">
+                <h4>this._data</h4>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>get</span>
+                    <flex-box class="column">
+                        <span>param:key</span>
+                        <span>{String}</span>
+                        <span>returns: {*}</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.element</span>
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>set</span>
+                    <flex-box class="column">
+                        <span>param:key</span>
+                        <span>{String}</span>
+                        <span>param:value</span>
+                        <span>{*}</span>
+                        <span>returns: {void}</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.element</span>
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+            </section>
+
+            <h4 class="margin-top two">Data-Binding</h4>
+            <hr>
+            <p>
+                Elliptical data-binding maps a deep observable property($scope) on the element prototype chain to the component template DOM marked by a template attribute.
+                Elliptical components use <a class="primary" href="http://www.dustjs.com/" target="_blank">dustjs</a> for template markup. Two-way data-binding is marked up
+                using the data-bind attribute.
+            </p>
+            <p>The philosophy behind elliptical's approach is that deep observable data-binding should just work without imperative wiring. Otherwise your component is tied too closely
+            to the model and you do not have--by definition--"reusable components." </p>
+            <blockquote class="info margin-top two">
+                <span class="bold">NOTE:</span> The template attribute can be set on the custom element itself or on a child element.<br><br>
+                <span class="bold">FURTHER NOTE:</span> The template attribute can be set in the definition or the instance
+            </blockquote>
+            <mark-down class="margin-top two">
+                ```html
+                <xmp>
+                 <input type="text" data-bind="value:firstName" value="{firstName}">
+                </xmp>
+                <xmp>
+                <!--arrays-->
+                {#model}
+                    <input type="text" data-bind="value:model.$0.firstName" value="{firstName}">
+                {/model}
+
+                <!--deep nesting-->
+                {#accounts}
+                <span data-bind="text:accounts.$0.name">{name}</span>
+                    <flex-box class="column">
+                        {#phoneNumbers}
+                          <input type="text" data-bind="value:phoneNumbers.$1.phone" value="{phone}">
+                        {/phoneNumbers}
+                    </flex-box>
+                </xmp>
+                {/accounts}
+                ```
+            </mark-down>
+
+            <h5 class="margin-top two">Data-Bind Syntax</h5>
+            <mark-down>
+                ```js
+                data-bind="type:path"
+
+                ```
+            </mark-down>
+            <p class="margin-top two">"type" can either be "text" for textNode(span), or an attribute type, such as "value." </p>
+            <p class="margin-top two">
+                path is dot-notation from parent to property. For nested array properties and sub-properties, it is by index.
+            </p>
+            <h5 class="margin-top two">Path Index Helpers</h5>
+            <p>
+                Nested objects with array properties and sub-properties requires path indexes to properly two-way data-bind to the template DOM. Elliptical extends the dustjs library
+                to offer path index helpers. $&lt;n&gt;, where n=0,1,...j indicates the depth.
+            </p>
+            <section class="docs margin-top two">
+                <h4>Path Index Helpers</h4>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>$0</span>
+                    <flex-box class="column">
+                        <span>depth: 0</span>
+                        <span>model.$0.prop</span>
+                        <span>ex: accounts.$0.firstName</span>
+                        <span></span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>$1</span>
+                    <flex-box class="column">
+                        <span>depth: 1</span>
+                        <span>model.$0.prop.$1.subprop</span>
+                        <span>ex: accounts.$0.addresses.$1.street</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>$2</span>
+                    <flex-box class="column">
+                        <span>depth: 2</span>
+                        <span>model.$0.prop.$1.subprop.$2.subsubprop</span>
+                        <span>ex: accounts.$0.addresses.$1.phoneNumbers.$2.phone</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>.</span>
+                    <flex-box class="column">
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <flex-box class="space-between full-width row">
+                    <span>.</span>
+                    <flex-box class="column">
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span></span>
+                    </flex-box>
+                </flex-box>
+                <flex-box class="space-between full-width row">
+                    <span>.</span>
+                    <flex-box class="column">
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span></span>
+                    </flex-box>
+                </flex-box>
+            </section>
+
+            <h5 class="margin-top two">Annotated attribute binding</h5>
+            <p>
+                If the custom element definition is marked with a <span class="secondary">parse-attr</span> attribute, then you can use <span class="secondary">[[ ]]</span>
+                to bind attribute values in the instance to placeholders in the definition.
+            </p>
+
+            <mark-down class="margin-top two">
+                ```html
+                <xmp>
+                <!--definition-->
+                <my-element parse-attr definition>
+                    <template>
+                        <span title="[[title]]">[[text]]</span>
+                        <content></content>
+                    </template>
+                </my-element>
+
+                <!--instance-->
+                <my-element title="My Title" text="Welcome"></my-element>
+                </xmp>
+                ```
+            </mark-down>
+
+            <h4 class="margin-top two">Data Sources</h4>
+            <hr>
+            <p>
+                Data-bound components need data. The question becomes how do we get the data. You can manually wire-up the data in the created callback init event, but in the real-world
+                this violates re-usability. In the MVC design pattern, web components are part of "the View," and the View generally shouldn't be fetching the model. This violates a single-responsibility
+                principle. It is the job of the Controller to pass the model to the View. Given this, if the MVC framework, server-side or client-side, binds the model to a ViewData context(in elliptical,
+                underneath the covers, this would be window.__viewData), then we can use declarative markup in the attributes to bind a data-model to our web components. This is the purpose of the "scope"
+                attribute. If a web component has the scope attribute set, it will try to fetch its model from that property in the ViewData context(which it will then bind to the $scope observable).
+                NOTE: it is easy in such frameworks as ASP.NET(using a HtmlHelper) or ExpressJS to serialize a model to the global context in a script tag. In client-side frameworks, it is trivial to wire a render method
+                to bind the model to the global context.
+            </p>
+
+            <p>
+                Still, there will be many times where you might want to encapsulate the service request inside the component. In such cases, we can rely on a dependency injection/service
+                locator pattern.
+            </p>
+            <section class="docs margin-top two">
+                <h4>Data Sources</h4>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>manual</span>
+                    <flex-box class="column">
+                        <span>hard-coded in a component method, typically init</span>
+                        <span>imperative</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>[data] attribute </span>
+                    <flex-box class="column">
+                        <span>json string passed to the component's 'data' attribute </span>
+                        <span>annotation/declarative</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>ViewData context </span>
+                    <flex-box class="column">
+                        <span>bind to a property on the current ViewData context</span>
+                        <span>window.__viewData</span>
+                        <span>annotation/declarative</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>Dependency Injection </span>
+                    <flex-box class="column">
+                        <span>inject the callable service into the component</span>
+                        <span>a mix of declarative & imperative</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+            </section>
+            <h4 class="margin-top two">Dependency Injection</h4>
+            <hr>
+            <p>
+                By default, elliptical components uses <a href="https://github.com/ellipticaljs/elliptical-container" class="primary">elliptical-container</a> as the DI container.
+                The container is passed to the component prototype chain to implement a service locator. We use public attributes on the custom element(.e.g, 'service') to
+                locate the service.
+            </p>
+            <mark-down>
+                ```html
+                <xmp>
+                <my-element service="MyService"></my-element>
+                </xmp>
+                ```
+                ```js
+                $.component('my-element',{
+                      _initComponent:function(){
+                         this._bindService();
+                      },
+
+                      _bindService:function(){
+                         var self=this;
+                         var serviceName=this.service;
+                         var myService=this.$service(serviceName);
+                         myService.get({},function(err,data){
+                              self.$scope=data;
+                         });
+                      }
+
+                });
+
+                ```
+            </mark-down>
+
+            <blockquote class="warning margin-top two">
+                You should not dash format service attribute values.
+            </blockquote>
+
+            <section class="docs margin-top two">
+                <h4>Service Locator</h4>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>$service</span>
+                    <flex-box class="column">
+                        <span>param:{String} name</span>
+                        <span>returns a service(singleton,constructor,prototype,class)</span>
+                        <span>returns: {*}</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.element</span>
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>$serviceAsync</span>
+                    <flex-box class="column">
+                        <span>param:{String} name</span>
+                        <span>param:{Function} callback</span>
+                        <span>async returns a service(singleton,constructor,prototype,class)</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.element</span>
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+            </section>
+
+            <h4 class="margin-top two">Template Helpers</h4>
+            <hr>
+            <a class="primary" href="http://www.dustjs.com/guides/dust-helpers/" target="_blank">The Core Dust Template Helpers</a>
+            <p class="margin-top two">Additional helpers provided by the component library.</p>
+            <section class="docs margin-top two">
+                <h4>Template Helpers</h4>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>formatCurrency</span>
+                    <flex-box class="column">
+                        <span>param:value</span>
+                        <span>{Numeric}</span>
+                        <span>returns: {Decimal}</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>extFormatCurrency</span>
+                    <flex-box class="column">
+                        <span>param:value</span>
+                        <span>{Numeric}</span>
+                        <span>param:value</span>
+                        <span>returns: {String}</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>placeholder</span>
+                    <flex-box class="column">
+                        <span>param:value</span>
+                        <span>{String}</span>
+                        <span>param:defaultValue</span>
+                        <span>{String}</span>
+                        <span>returns: {String}</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>phraseCase</span>
+                    <flex-box class="column">
+                        <span>param:value</span>
+                        <span>{String}</span>
+                        <span>returns: {String}</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>checked</span>
+                    <flex-box class="column">
+                        <span>param:value</span>
+                        <span>{Boolean}</span>
+                        <span>returns: {String} attribute</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>radio</span>
+                    <flex-box class="column">
+                        <span>param:value</span>
+                        <span>{String}</span>
+                        <span>param:key</span>
+                        <span>{String}</span>
+                        <span>returns: {String} attribute</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>selected</span>
+                    <flex-box class="column">
+                        <span>param:value</span>
+                        <span>{String}</span>
+                        <span>param:key</span>
+                        <span>{String}</span>
+                        <span>returns: {String} attribute</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>truthy</span>
+                    <flex-box class="column">
+                        <span>param:value</span>
+                        <span>{Boolean}</span>
+                        <span>param:true</span>
+                        <span>{String}</span>
+                        <span>param:false</span>
+                        <span>{String}</span>
+                        <span>returns:{String}</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>hide</span>
+                    <flex-box class="column">
+                        <span>param:value</span>
+                        <span>{Boolean}</span>
+                        <span>returns: {String} class attribute 'hide'</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>disable</span>
+                    <flex-box class="column">
+                        <span>param:value</span>
+                        <span>{Boolean}</span>
+                        <span>returns: {String} disable attribute</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>readonly</span>
+                    <flex-box class="column">
+                        <span>param:value</span>
+                        <span>{Boolean}</span>
+                        <span>returns: {String} readonly attribute</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>position</span>
+                    <flex-box class="column">
+                        <span>params:none</span>
+                        <span>returns: {Numeric} current position(index +1)</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>index</span>
+                    <flex-box class="column">
+                        <span>params:none</span>
+                        <span>returns: {Numeric} index</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>urlEncode</span>
+                    <flex-box class="column">
+                        <span>param:value</span>
+                        <span>{String}</span>
+                        <span>returns: {String}</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>toggle</span>
+                    <flex-box class="column">
+                        <span>param:value</span>
+                        <span>{String}</span>
+                        <span>param:on</span>
+                        <span>{String}</span>
+                        <span>param:onCss</span>
+                        <span>{String}</span>
+                        <span>param:offCss</span>
+                        <span>{String}</span>
+                        <span>returns: {String}</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>compare</span>
+                    <flex-box class="column">
+                        <span>param:value</span>
+                        <span>{String}</span>
+                        <span>param:test</span>
+                        <span>{String}</span>
+                        <span>param:echo</span>
+                        <span>{String}</span>
+                        <span>returns: {String}</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>pluralize</span>
+                    <flex-box class="column">
+                        <span>param:count</span>
+                        <span>{Numeric}</span>
+                        <span>param:singular</span>
+                        <span>{String}</span>
+                        <span>param:plural</span>
+                        <span>{String}</span>
+                        <span>returns: {String}</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>id</span>
+                    <flex-box class="column">
+                        <span>params:none</span>
+                        <span>returns: {String} random string id</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+                <hr>
+                <flex-box class="space-between full-width row">
+                    <span>guid</span>
+                    <flex-box class="column">
+                        <span>params:none</span>
+                        <span>returns: {String} guid</span>
+                    </flex-box>
+                    <flex-box class="column last">
+                        <span>$.component</span>
+                    </flex-box>
+                </flex-box>
+            </section>
+
+            <h4 class="margin-top two">Installation/Usage</h4>
+            <hr>
+
+            <mark-down>
+                ```bash
+                bower install elliptical-component --save
+                ```
+                ```html
+                <xmp>
+                <link rel="import" href="bower_components/elliptical-component/elliptical-component.html">
+                </xmp>
+                ```
+            </mark-down>
+
+            <blockquote class="warning margin-top two">
+                <span class="bold">NOTE: </span> to avoid any flickering issues with browsers that do not natively support HTMLImports, a better experience can
+                be achieved by the following
+            </blockquote>
+
+            <mark-down class="margin-top two">
+                ```html
+                <xmp>
+                <link rel="stylesheet" href="bower_components/elliptical-component/dist/styles.css">
+                <link rel="import" href="bower_components/elliptical-component/elliptical-component.html">
+                </xmp>
+                ```
+            </mark-down>
+
+            <blockquote class="info margin-top two">
+                <span>Usage with the full elliptical css distribution</span>
+            </blockquote>
+
+            <mark-down class="margin-top two">
+                ```bash
+                bower install elliptical-sass --save
+                ```
+                ```html
+                <xmp>
+                <link rel="stylesheet" href="bower_components/elliptical-sass/dist/elliptical.css">
+                <link rel="import" href="bower_components/elliptical-component/elliptical-component.html">
+                </xmp>
+                ```
+            </mark-down>
+
+            <h4 class="margin-top two">Element Catalog</h4>
+            <hr>
+            <p>coming soon...</p>
         </grid-columns>
     </grid-row>
 
@@ -284,11 +1477,13 @@
         zip:88980,
         phone:'555-555-0000'
     };
-    Elliptical.context.set('address',address);
+    Elliptical.viewData.set('address',address);
     Elliptical(function(){
         var observableList=document.querySelector('observable-list');
         console.log(observableList.$scope);
-        observableList.log('test message');
+        observableList.onScopeChange(function(result){
+            console.log(result);
+        });
     });
 </script>
 </body>

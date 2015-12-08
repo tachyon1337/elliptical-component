@@ -68,8 +68,11 @@
                 'input@focus':'_onFocus'
             },
 
+
+
             _onClick:function(event){
                 console.log(event);
+                this._publish('profile.submit',{test:'test'});
             },
 
             _onFocus:function(event){

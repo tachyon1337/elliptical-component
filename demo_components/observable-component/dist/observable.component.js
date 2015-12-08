@@ -2791,29 +2791,49 @@
         },
 
         /**
+         * get subscriptions Map
+         * @private
+         */
+        _getSubscriptions:function(){
+            var subscriptions=this._data.get('subscriptions');
+            if(!subscriptions){
+                subscriptions=new Map();
+            }
+            return subscriptions;
+        },
+
+        /**
          * subscribe to data/message over channel
          * @param {string} channel
          * @param {function} fn
          * @private
          */
         _subscribe:function(channel,fn){
-            var subscriptions=this._data.get('subscriptions');
-            if(!subscriptions){
-                subscriptions=new Map();
-            }
+            var subscriptions=this._getSubscriptions();
             subscriptions.set(channel,fn);
             this._data.set('subscriptions',subscriptions);
             Event.on(channel,fn);
         },
 
-        _subscriptions: $.noop,
+        _bindSubscriptions:function(){
+            var callbacks=this._subscriptions;
+            for(var prop in callbacks){
+                if(callbacks.hasOwnProperty(prop)){
+                    var channel=prop;
+                    var callback=callbacks[prop];
+                    this._subscribe(channel,this[callback].bind(this));
+                }
+            }
+        },
+
+        _subscriptions: {},
 
         /**
          * unbind subscriptions
          * @private
          */
         _unbindSubscriptions:function(){
-            var subscriptions=this._data.get('subscriptions');
+            var subscriptions=this._getSubscriptions();
             subscriptions.forEach(function(fn,channel){
                 Event.off(channel,fn);
             });
@@ -2865,11 +2885,9 @@
          */
         _initScopeElement:function(){
             var scopeBind=(this.options) ? this.options.scopeBind : this.scopeBind;
-            var idProp=(this.options) ? this.options.idProp : this.idProp;
             if(scopeBind===undefined) scopeBind=true;
             this._data.set('scopeTimeoutId',null);
             this._data.set('scopeObserver',null);
-            this._data.set('scopeId',idProp);
             this.__initScope();
             if(this.__bindByDataAttribute()) this._setObservable();
             else{
@@ -2884,12 +2902,7 @@
          * @private
          */
         __initScope:function(){
-            var self=this;
             this.$scope={};
-            var node=this.element[0];
-            if(this===node) return;
-            //set public getter/setter $scope on the element instance
-
         },
 
         /**
@@ -2930,9 +2943,8 @@
             data=JSON.parse(data);
             var scope=(this.options) ? this.options.scope : this.scope;
             if(scope) this.$scope[scope]=data;
-            else{
-                this.$scope=data;
-            }
+            else this.$scope=data;
+
             return true;
         },
 
@@ -3055,7 +3067,7 @@
          *
          * @private
          */
-        _onScopeBind: function(){},
+        __notify: function(){},
 
         /**
          * asynchronous $scope property setter for browsers that have polyfilled Object.observe
@@ -3095,19 +3107,14 @@
          * @returns {object}
          * @public
          */
-        _changeReport:function(n,o){
+        _changeReport:function(o,n){
             return report.objChangedProps(n,o);
         },
 
-        /**
-         *
-         * @param {object} val
-         */
-        $setScope: function(val){
-            if(val!==undefined) this.$scope=val;
-            this._setObservable();
-            this._onScopeBind();
+        changeReport:function(o,n){
+          return this._changeReport(o,n);
         }
+
     };
 }));
 //umd pattern
@@ -3286,8 +3293,11 @@
             var templateNode=this._data.get('templateNode');
             if(templateNode){
                 templateNode.classList.add('visible');
+                this.__onTemplateVisibility();
             }
         },
+
+        __onTemplateVisibility:function(){},
 
         /**
          *
@@ -3521,6 +3531,7 @@
             }
 
             this._onScopeChange(result);
+            this.__notify(result);
         },
 
         /**

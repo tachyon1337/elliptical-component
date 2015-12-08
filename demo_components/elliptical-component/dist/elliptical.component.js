@@ -282,6 +282,7 @@
         /* custom element callbacks
          *  pass them onto the element instance, where the UI factory can hook into them
          * */
+
         proto.attachedCallback = function () {
             if (this._attachedCallback) {
                 this._attachedCallback();
@@ -346,7 +347,7 @@
     $.widget('elliptical.element',{
 
         /**
-         * should never be overwritten, _initElement becomes the de facto dev hook
+         * should never be overwritten, _initElement becomes the created dev hook
          * @private
          */
         _create:function(){
@@ -369,11 +370,19 @@
             this._onBeforeCreate();
         },
 
+        /**
+         *
+         * @private
+         */
         _onBeforeCreate:function(){
             (this.options.proxyUpgrade) ? this._proxyUpgradeElement() : this._upgradeElement();
         },
 
-        //no template transposition for the element
+
+        /**
+         * no template transposition for the element
+         * @private
+         */
         _proxyUpgradeElement:function(){
             if(this.element[0].dataset){
                 this.element[0].dataset.upgraded=true;
@@ -381,6 +390,10 @@
             this._onCreate();
         },
 
+        /**
+         *
+         * @private
+         */
         _upgradeElement:function(){
             var self=this;
             var upgraded = upgradedDataSet(this.element[0]);
@@ -402,10 +415,19 @@
             }
         },
 
+        /**
+         *
+         * @returns {string}
+         * @private
+         */
         _press:function(){
             return ('ontouchend' in document) ? 'touchend' : 'click';
         },
 
+        /**
+         *
+         * @private
+         */
         _onCreate: function(){
             if(this._created){
                 return;
@@ -413,19 +435,31 @@
                 this._created=true;
             }
             this._setOptionsFromAttribute();
-            this._publishLoaded();
-            this._initElement();
-            this.__onInit();
             this._delegateEventListener();
             this._setChildrenAttributes();
             this.__componentCallbacks();
+            this._bindOptionsToPrototypes();
+            this.__bindPressEvent();
+            this._initElement();
+            this.__onInit();
             this._bindPublicPropsToElement();
+            this._bindPublicElementMethods();
+            this._publishLoaded();
+
         },
 
+        /**
+         *
+         * @private
+         */
         _publishLoaded: function(){
             this._triggerEvent('loaded',this.element);
         },
 
+        /**
+         *
+         * @private
+         */
         _bindPublicPropsToElement:function(){
             var prototype=Object.getPrototypeOf(this);
             var node=this.element[0];
@@ -434,31 +468,85 @@
             for(var prop in prototype){
                 if(prototype.hasOwnProperty(prop)){
                     this._assignPublicMethods(node,prototype,prop,self);
-                    this._assignPublicProps(node,prototype,prop,self);
+                    this.__assignPublicProps(node,prototype,prop,self);
                 }
             }
         },
 
+
+        /**
+         *
+         * @private
+         */
+        _bindOptionsToPrototypes:function(){
+            var node=this.element[0];
+            var self=this;
+            var options=this.options;
+            for(var prop in options){
+                if(options.hasOwnProperty(prop) && prop.indexOf('$') !==0 && prop !=='$providers'
+                    && prop !=='classes' && prop !=='upgraded' && prop !=='mqMaxWidth' && prop !=='create' && prop !=='template'){
+                    //assign to component prototype in the jquery object prototype chain
+                    this._assignPublicProps(self,options,prop,self.options);
+                    //assign to custom element prototype chain
+                    this._assignPublicProps(node,options,prop,self.options);
+                }
+            }
+        },
+
+        /**
+         *
+         * @param {object} node
+         * @param {object} obj
+         * @private
+         */
         _iterateForPublicProps:function(node,obj){
             var self=this;
             for(var prop in obj){
                 if(obj.hasOwnProperty(prop)){
-                    this._assignPublicProps(node,obj,prop,self);
+                    this.__assignPublicProps(node,obj,prop,self);
                 }
             }
         },
 
+        /**
+         *
+         * @param {object} node
+         * @param {object} obj
+         * @param {string} prop
+         * @param {object} context
+         * @private
+         */
         _assignPublicMethods:function(node,obj,prop,context){
-            if(prop.indexOf('_')!==0 && typeof obj[prop]==='function'){
+            if(prop.indexOf('_')!==0 && typeof obj[prop]==='function' && prop !=='constructor'){
                 node[prop]=function(){
                     context[prop].apply(context,arguments);
                 }
             }
         },
 
-        _assignPublicProps:function(node,obj,prop,context){
-            if(prop.indexOf('$')===0 && typeof obj.prop !=='function'){
-                Object.defineProperty(node, prop, {
+        /**
+         *
+         * @param {object} node
+         * @param {object} obj
+         * @param {object} prop
+         * @param {object} context
+         * @private
+         */
+        __assignPublicProps:function(node,obj,prop,context){
+            if(prop.indexOf('$')===0) this._assignPublicProps(node,obj,prop,context);
+        },
+
+        /**
+         *
+         * @param {object} host
+         * @param {object} obj
+         * @param {object} prop
+         * @param {object} context
+         * @private
+         */
+        _assignPublicProps:function(host,obj,prop,context){
+            if(typeof obj[prop] !=='function'){
+                Object.defineProperty(host, prop, {
                     get: function() { return context[prop]; },
                     set: function(newValue) { context[prop] = newValue; },
                     enumerable: true,
@@ -467,6 +555,10 @@
             }
         },
 
+        /**
+         *
+         * @private
+         */
         __bindEvents:function(){
             var events=this._events;
             for(var prop in events){
@@ -476,6 +568,12 @@
             }
         },
 
+        /**
+         *
+         * @param {object} events
+         * @param {string} prop
+         * @private
+         */
         __bindEvent:function(events,prop){
             var event;
             var method=events[prop];
@@ -492,10 +590,55 @@
             }
         },
 
+        /**
+         *
+         * @param {string} evt
+         * @returns {string}
+         * @private
+         */
         __getEvent:function(evt){
             if(evt==='click') return this._data.click;
             else if(evt==='press') return this._press();
             else return evt;
+        },
+
+        /**
+         *
+         * @private
+         */
+        _bindPublicElementMethods:function(){
+            var self=this;
+            var node=this.element[0];
+            node.hide=function(){
+                self._hide();
+            };
+
+            node.show=function(){
+                self._show();
+            };
+
+            node.$service=function(name){
+                self.service(name);
+            };
+
+            node.$serviceAsync=function(name,callback){
+                self.serviceAsync(name,callback);
+            };
+
+            node.runInit=function(){
+                self.runInit();
+            };
+
+        },
+
+        __bindPressEvent:function(){
+            var self=this;
+            var data=this._data;
+            Object.defineProperty(data, 'press', {
+                get: function() { return self._press(); },
+                enumerable: true,
+                configurable: true
+            });
         },
 
         /**
@@ -525,12 +668,12 @@
 
 
         /**
-         * event
+         * registers a DOM event listener
          *
-         * @param element {Object}
-         * @param event {String}
-         * @param selector {String}
-         * @param callback {Function}
+         * @param {object} element
+         * @param {string} event
+         * @param {string} selector
+         * @param {function} callback
          * @private
          */
         _event: function (element, event, selector,callback) {
@@ -563,8 +706,8 @@
         },
 
         /**
-         * unbinds registered event listeners. When called from _destroy(), all events are disposed, regardless.
-         * If called during the $.element lifecycle, events are disposed if unbind flag was set at registration
+         * unbinds registered event listeners.
+         *
          * @private
          */
         _unbindEvents: function () {
@@ -584,18 +727,35 @@
          */
         _onUnbindEvents: $.noop,
 
+        /**
+         *
+         * @private
+         */
         _hide:function(){
             this.element.hide();
         },
 
+        /**
+         *
+         * @private
+         */
         _show:function(){
             this.element.show();
         },
 
+        /**
+         * sets up the event listener for the 'on-click' tag attribute
+         * @private
+         */
         _delegateEventListener:function(){
             this._event(this.element,this._data.click,'[on-click]',this._listenerCallback.bind(this));
         },
 
+        /**
+         *
+         * @param {object} event
+         * @private
+         */
         _listenerCallback:function(event){
             var target=$(event.currentTarget);
             var fn=target.attr('on-click');
@@ -623,28 +783,50 @@
             this._data._store=null;
             this._data.events.length=0;
             this._destroyed=true;
-
         },
 
 
-        /* custom element lifecycle callback events */
-
+        /**
+         * custom element lifecycle callback events
+         * @private
+         */
         __componentCallbacks:function(){
-           var node=this.element[0];
-            node._attachedCallback=this._attachedCallback;
-            node._detachedCallback=this._detachedCallback;
-            node._attributeChangedCallback=this._attributeChangedCallback;
+            var self=this;
+            var node=this.element[0];
+            var prototype=Object.getPrototypeOf(node);
+            prototype._attachedCallback=function(){
+                self._attached();
+                if(node.attached) node.attached();
+            };
+            prototype._detachedCallback=function(){
+                self._detached();
+                if(node.detached) node.detached();
+            };
+            prototype._attributeChangedCallback=function(name,oldValue,newValue){
+                self._attributeChanged(name,oldValue,newValue);
+                if(node.attributeChanged) node.attributeChanged(name,oldValue,newValue);
+            };
         },
+
 
         _distributeContent:function(tagName,element,callback){
             _HTML5Imports.upgradeElement(tagName, element,callback);
         },
 
-        _attachedCallback: $.noop,
+        /**
+         * @private
+         */
+        _attached: $.noop,
 
-        _detachedCallback: $.noop,
+        /**
+         * @private
+         */
+        _detached: $.noop,
 
-        _attributeChangedCallback: $.noop,
+        /**
+         * @private
+         */
+        _attributeChanged: $.noop,
 
 
         /**
@@ -665,11 +847,36 @@
         _onDestroy: $.noop,
 
 
+        ////--public-------------------
+
+        /**
+         * @public
+         */
+        hide:function(){
+            this._hide();
+        },
+
+        /**
+         * @public
+         */
+        show:function(){
+            this._show();
+        },
+
+        /**
+         * @public
+         */
         runInit:function(){
             this._initElement();
         },
 
-        service:function(name){
+        /**
+         * service locator
+         * @param {string} name
+         * @returns {*}
+         * @public
+         */
+        $service:function(name){
             if(name===undefined && this.options){
                 name=this.options.service;
             }
@@ -683,7 +890,12 @@
             }
         },
 
-        serviceAsync:function(name,callback){
+        /**
+         * async service locator
+         * @param {string} name
+         * @param {function} callback
+         */
+        $serviceAsync:function(name,callback){
             if(typeof name==='function'){
                 callback=name;
                 name=undefined;
@@ -710,6 +922,8 @@
                 },INTERVAL);
             }
         }
+
+
 
     });
 
@@ -1051,14 +1265,9 @@
     };
 
     var pubSub=observable.pubsub;
-    pubSub._initPubSubElement=function(){
-        this._data.set('subscriptions',[]);
-        this._subscriptions();
-    };
 
     var scope=observable.scope;
     var scopeOptions={
-            idProp:'id',
             scopeBind: true,
             objectAssign:false
     };
@@ -1071,7 +1280,6 @@
     //define component prototype
     var prototype={
         options:{
-            context:null, //$$.elliptical.context
             scope:null  //prop of context to bind
         },
 
@@ -1081,7 +1289,6 @@
          */
         _initElement:function(){
             this._initCacheElement();
-            this._initPubSubElement();
             this._initScopeElement();
             this._initTemplateElement();
             this._beforeInitComponent();
@@ -1091,35 +1298,28 @@
         _beforeInitComponent: $.noop,
 
         _initComponentElement:function(){
-            var context=this.options.context;
-            if(!context){
-                context=this._viewBag();
-                if(context){
-                    this.options.context=context;
-                }
-            }
-            this.$viewBag=context;
+            this.$viewBag=this._viewBag();
             this.__setScope();
             this._initComponent();
+            this._bindPublicComponentMethods();
+            this._bindSubscriptions();
             this.__subscriber();
             this.__publisher();
         },
 
         /**
-         * if a scope property has been declared, auto set the instance $scope; if a scope
-         * property has not been declared, it is up the dev to set the $scope in the _initComponent event
+         * sets public property $scope from the ViewData context and the scope public attribute
          * @private
          */
         __setScope: function(){
-            var data=(this.options) ? this.options.data : this.data;
+            var data=this.options.data;
             if(data) return;
-            var context=this.options.context,//context attached to $$.elliptical.context
-                scopeProp=this.options.scope; //context property to bind to the instance $scope
-
-            if(this.$scope && scopeProp && context){
-                if(this.options.objectAssign) this.$scope=context[scopeProp];
+            var context=this._viewBag();
+            var scope=this.options.scope;
+            if(scope){
+                if(this.options.objectAssign) this.$scope=context[scope];
                 else{
-                    this.$scope[scopeProp]=context[scopeProp];
+                    this.$scope[scope]=context[scope];
                 }
             }
         },
@@ -1145,9 +1345,9 @@
                         if(!self._data.get('_synced')){
                             self._data.set('_synced',true);
                             self._dispose();
-                            self.$scope=data.$scope;
+                            self.$scope=data;
                             self._rebind();
-                            self.__onSyncSubscribe(data.proto);
+                            self._onSyncSubscribe();
                         }
                     });
                 }
@@ -1163,16 +1363,21 @@
             var channel=this.options.channel;
             var event =this.options.event;
             var self=this;
+            var MAX=6;
+            var count=0;
             if(channel && !event){
                 if(this._data.get('scopeObserver')){
-                    this._publish(channel + '.sync',{proto:this,$scope:this.$scope});
+                    this._publish(channel + '.sync',this.$scope);
                 }else{
                     var timeoutId=setInterval(function(){
                         if(self._data.get('scopeObserver')){
                             clearInterval(timeoutId);
-                            self._publish(channel + '.sync',{proto:self,$scope:self.$scope});
+                            self._publish(channel + '.sync',self.$scope);
+                        }else{
+                            if(count<MAX) count++;
+                            else clearInterval(timeoutId);
                         }
-                    },500);
+                    },300);
                 }
             }
         },
@@ -1184,26 +1389,11 @@
          * @private
          */
         _viewBag:function(){
-            var $$=window.$$;
-            if($$){
-                if($$.elliptical)return $$.elliptical.context;
-                else{
-                    return null;
-                }
-            }else{
-                return null;
-            }
+            if(!window.__viewData) window.__viewData={};
+            return window.__viewData;
         },
 
 
-        /**
-         * component handler for channel.sync subscription
-         * @param data {Object}
-         * @component
-         */
-        __onSyncSubscribe: function(data){
-            this._onSyncSubscribe(data);
-        },
 
         /**
          * handler for channel.sync, subscription
@@ -1213,29 +1403,49 @@
         _onSyncSubscribe: $.noop,
 
 
-
         /**
-         * returns the scope property of the ViewBag context(options.context)
+         * returns the scope property of the ViewData context
          * @returns {Object}
          * @private
          */
         _scopedContextModel:function(){
-            var context=this.options.context,
-                scopeProp=this.options.scope;
+            var context=this._viewBag();
+                scope=this.options.scope;
 
-            return (scopeProp && context) ? context[scopeProp] : undefined;
+            return (scope) ? context[scope] : undefined;
         },
 
         __onTemplateVisibility:function(){
-            if(this.hasAttribute('ui-preload')) this.removeAttribute('ui-preload');
+            var node=this.element[0];
+            if(node.hasAttribute('ui-preload')) node.removeAttribute('ui-preload');
             this._onTemplateVisibility();
         },
 
         _onTemplateVisibility:function(){},
 
+        _bindPublicComponentMethods:function(){
+            var self=this;
+            var node=this.element[0];
+            node.onScopeChange=function(callback){
+                self.__notify=function(result){
+                    if(callback) callback(result);
+                }
+            };
+
+            node.$rebind=function(){
+                self.$rebind();
+            };
+
+            node.changeReport=function(o,n){
+                return self.changeReport(o,n);
+            };
+        },
+
         runInit:function(){
             this._initComponent();
         }
+
+
     };
 
 
@@ -1260,23 +1470,6 @@
     for(var key in $.element){
         $.component[key]= $.element[key];
     }
-
-    /**
-     * getter/setter for scope id prop
-     * @type {Object}
-     */
-    $.component.config={
-        scope:Object.defineProperties({},{
-            'id':{
-                get:function(){
-                    return $.Widget.prototype.options.idProp;
-                },
-                set:function(val){
-                    $.Widget.prototype.options.idProp=val;
-                }
-            }
-        })
-    };
 
 
     return $;

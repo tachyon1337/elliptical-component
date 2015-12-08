@@ -42,7 +42,7 @@
     "bk"
   ],
   "dependencies": {
-    "observable-component": "~1.0.2",
+    "observable-component": "~1.0.14",
     "elliptical-mutation-summary": "~1.0.1",
     "elliptical-event": "~1.0.0",
     "elliptical-jquery-ui": "~1.11.3",

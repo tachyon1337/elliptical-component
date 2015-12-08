@@ -1,7 +1,7 @@
 {
   "name": "observable-component",
   "description": "An observable two-way data-binding platform for web components",
-  "version": "1.0.9",
+  "version": "1.0.14",
   "main": "dist/observable-component.js",
   "authors": [
     "S. Francis"
@@ -45,13 +45,13 @@
     "elliptical-event": "~1.0.0",
     "Nested.observe": "~0.1.7"
   },
-  "_release": "1.0.9",
+  "_release": "1.0.14",
   "_resolution": {
     "type": "version",
-    "tag": "v1.0.9",
-    "commit": "160e4a9e4ceb8d10da099913d5d2a79e08fd6d54"
+    "tag": "v1.0.14",
+    "commit": "6c753bf34ca1772937a4db1fa675532bdbd067f7"
   },
   "_source": "git://github.com/ellipticaljs/observable-component.git",
-  "_target": "~1.0.2",
+  "_target": "~1.0.13",
   "_originalSource": "observable-component"
 }

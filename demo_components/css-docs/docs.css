@@ -48,7 +48,7 @@ footer{
     align-items: center;
     -webkit-justify-content: space-between;
     justify-content: space-between;
-    margin-top:4em;
+    margin-top:6em;
     padding:0 3em;
     color:#666;
     display:flex;
@@ -82,7 +82,16 @@ section.docs h4{
 }
 
 section.docs .row{
-    padding:0 2em 0 2.5em;
+    padding:.2em 2em .2em 2.5em;
+}
+
+section.docs .row.bg{
+    background:#f7f7f7;
+}
+
+
+section.docs .row>span:last-of-type{
+    width:10%;
 }
 
 section.docs .row>span:first-of-type{
@@ -90,12 +99,13 @@ section.docs .row>span:first-of-type{
     font-weight:500;
 }
 
-section.docs .row>span:last-of-type{
-    width:10%;
-}
 
 section.docs .row>flex-box{
     width:60%;
+}
+
+section.docs .row>.last{
+    width:10%;
 }
 
 section.docs .row>div{
@@ -155,4 +165,8 @@ section.docs .row-2:last-of-type{
     footer>.links>a{
         margin:0 0 1em 0;
     }
+}
+
+.bold{
+    font-weight:500;
 }

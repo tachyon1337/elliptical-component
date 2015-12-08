@@ -28,8 +28,12 @@
                     {name:'Steve Wright',address:'9300 West Blvd'},
                     {name:'George Carlin',address:'14000 Kingsw Drive'}
                 ];
-
+                console.log(this.test);
                 this.$scope.accounts=arr;
+            },
+
+            _subscriptions:{
+                'profile.submit':'_onSubmit'
             },
 
             _onClick:function(event){
@@ -40,6 +44,10 @@
 
             _onScopeChange:function(result){
                 console.log(result);
+            },
+
+            _onSubmit:function(data){
+                console.log(data);
             },
 
             _log:function(msg){

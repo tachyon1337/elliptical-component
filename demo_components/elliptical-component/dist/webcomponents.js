@@ -7,20 +7,19 @@ window.Elliptical = function (fn) {
     });
 };
 
-Elliptical.context={
+Elliptical.viewData={
     get:function(){
-        window.$$=window.$$ || {};
-        $$.elliptical=$$.elliptical || {};
-        $$.elliptical.context=$$.elliptical.context || {};
-        return $$.elliptical.context;
+       if(!window.__viewData){
+           window.__viewData={};
+       }
+       return window.__viewData;
     },
     set:function(prop,val){
         var context=this.get();
         context[prop]=val;
     },
     clear:function(){
-        var context=this.get();
-        context={};
+        window.__viewData={};
     }
 };
 /**
